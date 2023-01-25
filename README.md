@@ -1,12 +1,12 @@
 # install-bbrl-bbrl_gym-mujoco-pour-swimmerV3
-##header1 Install bbrl
-## Code
+
+## Install bbrl
 Clone the github repertory with the command:
 ```
 git clone https://github.com/osigaud/bbrl_gym
 ```
 
-Then, install the requirements in the bbrl file you have just cloned
+Then, install the requirements in the bbrl file you have just cloned:
 ```
 pip install -r requirements.txt
 ```
