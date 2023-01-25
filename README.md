@@ -1,4 +1,4 @@
-# install-bbrl-bbrl_gym-mujoco-pour-swimmerV3
+# install bbrl, bbrl_gym and mujoco to use swimmerV3
 
 ## Install bbrl
 Clone the github repertory with the command:
