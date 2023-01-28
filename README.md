@@ -16,7 +16,7 @@ After that, also in the bbrl file, you can finish installing bbrl with this comm
 pip install -e .
 ```
 
-### Install bbrl_gym
+## Install bbrl_gym
 
 Clone the github repository by using the following command:
 ```
