@@ -33,7 +33,7 @@ After that, also in the bbrl_gym file, you can finish installing bbrl with this 
 pip install -e .
 ```
 
-##Install mujoco
+## Install mujoco
 
 Enter the following website, then download mujoco:
 ```
