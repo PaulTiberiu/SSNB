@@ -41,7 +41,7 @@ https://github.com/openai/mujoco-py#install-mujoco
 ```
 Then, decompress what you have just installed with a right click on the mujoco tar, or use this command:
 ```
-tar -zxvf mujoco210-linux x86_64.tar.gz
+tar -zxvf mujoco210-linux-x86_64.tar.gz
 ```
 After that, you need to create an invizible file with the following command:
 ```
