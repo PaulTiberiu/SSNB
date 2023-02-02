@@ -127,7 +127,7 @@ def value_iteration_q(mdp: MazeMDPEnv, render: bool = True) -> Tuple[np.ndarray,
                     summ = 0
                     for y in range(mdp.nb_states):
                         summ += mdp.P[x, u, y] * np.max(qold[y, :])
-                    q[x,u]=(mdp.r[x,u] + mdp.gamma * summ) #modification!!!!!!!!!!!!!!!!!!!!!!!
+                    q[x,u]=(mdp.r[x,u] + mdp.gamma * summ) 
         
         if (np.linalg.norm(q - qold)) <= 0.01:
             stop = True
