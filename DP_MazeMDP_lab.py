@@ -135,7 +135,7 @@ def value_iteration_q(mdp: MazeMDPEnv, render: bool = True) -> Tuple[np.ndarray,
 
     if render:
         mdp.draw_v(q, title="Value iteration Q")
-        #mdp.mdp.plotter.video_writer.release() essaye sur google collab
+        mdp.mdp.plotter.video_writer.release()
 
     return q, q_list
 
@@ -222,7 +222,7 @@ def policy_iteration_v(mdp: MazeMDPEnv, render: bool = True) -> Tuple[np.ndarray
 
     if render:
         mdp.draw_v_pi(v, policy, title="Policy iteration V")
-        #mdp.mdp.plotter.video_writer.release() voir sur google collab
+        mdp.mdp.plotter.video_writer.release()
 
     return v, v_list
 
