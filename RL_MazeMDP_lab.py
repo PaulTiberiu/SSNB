@@ -108,7 +108,7 @@ def value_iteration_q(mdp: MazeMDPEnv, render: bool = True) -> Tuple[np.ndarray,
                     summ = 0
                     for y in range(mdp.nb_states):
                         summ += mdp.P[x, u, y] * np.max(qold[y, :])
-                    q[x,u]=(mdp.r[x,u] + mdp.gamma * summ) #modification!!!!!!!!!!!!!!!!!!!!!!!
+                    q[x,u]=(mdp.r[x,u] + mdp.gamma * summ) 
         
         if (np.linalg.norm(q - qold)) <= 0.01:
             stop = True
@@ -116,7 +116,7 @@ def value_iteration_q(mdp: MazeMDPEnv, render: bool = True) -> Tuple[np.ndarray,
 
     if render:
         mdp.draw_v(q, title="Value iteration Q")
-        #mdp.mdp.plotter.video_writer.release() essaye sur google collab
+        mdp.mdp.plotter.video_writer.release() essaye sur google collab
 
     return q, q_list
 
@@ -174,7 +174,7 @@ def q_learning_eps(
             [y, r, done, _] = mdp.step(u)
 
             # To be completed
-            delta = r+mdp.gamma*np.argmax(q[x+1,u]-q[x,u])
+            delta = r + mdp.gamma * q.max(axis=1)[y] - q[x, u]
             q[x,u] = q[x,u]+alpha*delta
 
             # Update the agent position
@@ -231,7 +231,7 @@ def q_learning_soft(
             [y,r,done] = mdp.step(u)
 
             # To be completed
-            delta = r+mdp.gamma*np.argmax(q[x+1,u]-q[x,u])
+            delta = r + mdp.gamma * q.max(axis=1)[y] - q[x, u]
             q[x,u] = q[x,u]+alpha*delta
 
             x = y
