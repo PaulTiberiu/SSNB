@@ -195,8 +195,6 @@ q, q_list = q_learning_eps(env, epsilon)
 # Given a temperature "tau", the QLearning algorithm computes the state action-value function
 # based on a softmax policy
 # alpha is the learning rate
-
-
 def q_learning_soft(
     mdp: MazeMDPEnv,
     tau: float,
@@ -226,9 +224,9 @@ def q_learning_soft(
                 mdp.draw_v_pi(q, q.argmax(axis=1))
 
             # To be completed 
-            u = softmax(q, x, tau)# (here, call the softmax function and sample from it)
-            q = sample_categorical(u)
-            [y,r,done] = mdp.step(u)
+            u_temp = softmax(q, x, tau)# (here, call the softmax function and sample from it)
+            u = sample_categorical(u_temp)
+            [y,r,done,_] = mdp.step(u)
 
             # To be completed
             delta = r + mdp.gamma * q.max(axis=1)[y] - q[x, u]
@@ -242,4 +240,10 @@ def q_learning_soft(
         mdp.current_state = 0
         mdp.draw_v_pi(q, get_policy_from_q(q), title="Q-learning softmax")
     return q, q_list
+
+tau = 6
+q, q_list = q_learning_soft(env, tau)
+
+show_videos("videos/", "Q-learningsoftmax")
+
 
