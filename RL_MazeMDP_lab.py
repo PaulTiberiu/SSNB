@@ -246,4 +246,156 @@ q, q_list = q_learning_soft(env, tau)
 
 show_videos("videos/", "Q-learningsoftmax")
 
+# --------------------------- Sarsa, epsilon-greedy version -------------------------------#
 
+# Given an exploration rate epsilon, the SARSA algorithm computes the state action-value function
+# based on an epsilon-greedy policy
+# alpha is the learning rate
+#https://www.geeksforgeeks.org/sarsa-reinforcement-learning/
+#https://stackoverflow.com/questions/32846262/are-q-learning-and-sarsa-with-greedy-selection-equivalent
+def sarsa_eps(
+    mdp: MazeMDPEnv,
+    epsilon: float,
+    nb_episodes: int = 20,
+    timeout: int = 50,
+    alpha: float = 0.5,
+    render: bool = True,
+) -> Tuple[np.ndarray, List[float]]:
+    # Initialize the state-action value function
+    # alpha is the learning rate
+    q = np.zeros((mdp.nb_states, mdp.action_space.n))
+    q_list = []
+
+    # Run learning cycle
+    mdp.timeout = timeout  # episode length
+
+    if render:
+        mdp.init_draw("Sarsa e-greedy")
+
+    for _ in tqdm(range(nb_episodes)):
+        # Draw the first state of episode i using a uniform distribution over all the states
+        x = mdp.reset(uniform=True)
+        done = False
+        u = egreedy(q, x, epsilon)
+        while not done:
+            if render:
+                # Show the agent in the maze
+                mdp.draw_v_pi(q, q.argmax(axis=1))
+
+            # Perform a step of the MDP
+            [y, r, done, _] = mdp.step(u)
+
+            # Draw an action using an epsilon-greedy policy
+            u_next = egreedy(q, y, epsilon)
+
+            # To be completed
+            delta = r + mdp.gamma * q[y, u_next] - q[x, u]
+            q[x,u] = q[x,u]+alpha*delta
+
+            # Update the agent position
+            x = y
+            u = u_next
+
+        q_list.append(np.linalg.norm(q))
+
+    if render:
+        # Show the final policy
+        mdp.current_state = 0
+        mdp.draw_v_pi(q, get_policy_from_q(q), title="Sarsa e-greedy")
+    return q, q_list
+
+epsilon = 0.02
+q, q_list = sarsa_eps(env, epsilon)
+
+show_videos("videos/", "Sarsae-greedy")
+
+# --------------------------- Sarsa, softmax version -------------------------------#
+
+# Given a temperature "tau", the SARSA algorithm computes the state action-value function
+# based on a softmax policy
+# alpha is the learning rate
+def sarsa_soft(
+    mdp: MazeMDPEnv,
+    tau: float,
+    nb_episodes: int = 20,
+    timeout: int = 50,
+    alpha: float = 0.5,
+    render: bool = True,
+) -> Tuple[np.ndarray, List[float]]:
+
+    # Initialize the state-action value function
+    # alpha is the learning rate
+    q = np.zeros((mdp.nb_states, mdp.action_space.n))
+    q_list = []
+
+    # Run learning cycle
+    mdp.timeout = timeout  # episode length
+
+    if render:
+        mdp.init_draw("Sarsa e-greedy")
+
+    for _ in tqdm(range(nb_episodes)):
+        # Draw the first state of episode i using a uniform distribution over all the states
+        x = mdp.reset(uniform=True)
+        done = False
+        u_temp = softmax(q, x, tau)
+        u = sample_categorical(u_temp)
+        while not done:
+            if render:
+                # Show the agent in the maze
+                mdp.draw_v_pi(q, q.argmax(axis=1))
+
+            # Perform a step of the MDP
+            [y, r, done, _] = mdp.step(u)
+
+            # Draw an action using an epsilon-greedy policy
+            u_next_temp = softmax(q, y, tau)
+            u_next = sample_categorical(u_next_temp)
+
+            # To be completed
+            delta = r + mdp.gamma * q[y, u_next] - q[x, u]
+            q[x,u] = q[x,u]+alpha*delta
+
+            # Update the agent position
+            x = y
+            u = u_next
+
+        q_list.append(np.linalg.norm(q))
+
+    if render:
+        # Show the final policy
+        mdp.current_state = 0
+        mdp.draw_v_pi(q, get_policy_from_q(q), title="Sarsa e-greedy")
+    return q, q_list
+
+tau = 6
+q, q_list = sarsa_soft(env, tau)
+
+show_videos("videos/", "Sarsasoftmax")
+
+
+# -------- plot learning curves of Q-Learning and Sarsa using epsilon-greedy and softmax ----------#
+
+def plot_ql_sarsa(env, epsilon, tau, nb_episodes, timeout, alpha, render):
+    q, q_list1 = q_learning_eps(env, epsilon, nb_episodes, timeout, alpha, render)
+    q, q_list2 = q_learning_soft(env, tau, nb_episodes, timeout, alpha, render)
+    q, q_list3 = sarsa_eps(env, epsilon, nb_episodes, timeout, alpha, render)
+    q, q_list4 = sarsa_soft(env, tau, nb_episodes, timeout, alpha, render)
+
+    plt.clf()
+    plt.plot(range(len(q_list1)), q_list1, label='q-learning epsilon')
+    plt.plot(range(len(q_list2)), q_list2, label='q-learning tau')
+    plt.plot(range(len(q_list3)), q_list3, label='sarsa epsilon')
+    plt.plot(range(len(q_list4)), q_list4, label='sarsa tau')
+
+    plt.xlabel('Number of episodes')
+    plt.ylabel('Norm of Q values')
+    plt.legend(loc='upper right')
+    plt.savefig("comparison_RL.png")
+    plt.title("Comparison of convergence rates")
+    plt.show()
+    
+# example
+epsilon = 0.02
+tau = 6
+plot_ql_sarsa(env, epsilon, tau, 1000, 50, 0.5, False)
