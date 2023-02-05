@@ -13,7 +13,7 @@ pip install -r requirements.txt
 
 After that, also in the bbrl file, you can finish installing bbrl with this command:
 ```
-pip install -e .
+sudo pip install -e .
 ```
 
 ## Install bbrl_gym
@@ -30,7 +30,7 @@ pip install -r requirements.txt
 
 After that, also in the bbrl_gym file, you can finish installing bbrl with this command:
 ```
-pip install -e .
+sudo pip install -e .
 ```
 
 ## Install mujoco
@@ -43,7 +43,7 @@ Then, decompress what you have just installed with a right click on the mujoco t
 ```
 tar -zxvf mujoco210-linux-x86_64.tar.gz
 ```
-After that, you need to create an invizible file with the following command:
+After that, you need to create a file with the following command:
 ```
 mkdir ./mujoco
 ```
@@ -51,7 +51,17 @@ To check if it has been created, use the command:
 ```
 ls -la
 ```
-The following step is to move the extracted file into the invizible file:
+The following step is to move the extracted file into the file you have just created:
 ```
 mv mujoco210 ./mujoco
+```
+After doing this, you need to change the .bahsrc file by following this steps (you need to be situated in home):
+```
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/tibi/.mujoco/mujoco210/bin
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/nvidia
+export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libGLEW.so
+```
+The first line needs to be replaced with your own path. To check the path, go into the bin file of mujoco and then write:
+```
+pwd
 ```
