@@ -61,7 +61,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/tibi/.mujoco/mujoco210/bin
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/nvidia
 export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libGLEW.so
 ```
-The first line needs to be replaced with your own path. To check the path, go into the bin file of mujoco and then write:
+The first line needs to be replaced with your own path. To check the path, go into the bin file of mujoco and then write in your terminal:
 ```
 pwd
 ```
