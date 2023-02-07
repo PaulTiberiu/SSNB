@@ -65,3 +65,13 @@ The first line needs to be replaced with your own path. To check the path, go in
 ```
 pwd
 ```
+Then, you need to use the following command in order to complete the installation:
+```
+# Make sure your python environment is activated
+sudo pip install -U 'mujoco-py<2.2,>=2.1'
+```
+After this steps, we could't execute some particular python files. So in order to be sure that the mujoco installation works properly, we recommend you to install the following libraries:
+```
+sudo apt-get install patchelf
+sudo apt-get install libosmesa6-dev
+```
