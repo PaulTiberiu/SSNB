@@ -85,7 +85,7 @@ In order to use another XML file, you need to follow this path:
 ```
 gym/gym/envs/mujoco
 ```
-In this folder you need to search the swimmer_v3.py file and you need to replace the following line of code (it can be found at the top of the file),by changing the xml file with a xml file of your choice:
+In this folder you need to search the swimmer_v3.py file and you need to replace the following line of code (it can be found at the top of the file),by changing the "swimmer.xml" file with a .xml file of your choice:
 ```
 xml_file="swimmer.xml"
 ```
