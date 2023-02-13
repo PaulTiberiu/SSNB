@@ -4,8 +4,7 @@
 
 This project aims to study the scalability of RL algorithms when the size of the problem is increased. Here, we consider the gym-based environment `Swimmer` that we tweaked to make it have any finite number of bodies.
 
-
-## How to install bbrl, bbrl_gym and mujoco
+## How to install bbrl, bbrl_gym, bbrl_examples and mujoco
 ### Install bbrl
 
 After cloning the Github repository, you should install the required libraries. Here is the whole process :
@@ -71,3 +70,16 @@ NB : the following libraries need to be installed first in order for `MuJoCo` to
 sudo apt-get install patchelf
 sudo apt-get install libosmesa6-dev
 ```
+
+## How To
+Now, with everything installed, we can use reinforcement learning algorithms to run different environments. Here we will focus on Swimmer.
+
+### XML file for Swimmer
+In order to work, the Swimmer environment needs a XML file. You can find this file in the gym folder and it is named swimmer.xml. The path is the following:
+```
+gym/gym/envs/mujoco/assets
+```
+NB: The XML file works for a 3 bodies Swimmer, but you can find much more examples in 
+
+
+
