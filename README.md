@@ -31,11 +31,6 @@ git clone https://github.com/osigaud/bbrl_examples
 pip install -r requirements.txt
 sudo pip install -e .
 ```
-```
-git clone https://github.com/osigaud/bbrl_gym
-pip install -r requirements.txt
-sudo pip install -e .
-```
 
 ### Install mujoco
 
