@@ -79,7 +79,7 @@ In order to work, the Swimmer environment needs a XML file. You can find it in t
 ```
 gym/gym/envs/mujoco/assets
 ```
-NB: The XML file works for a 3 bodies Swimmer, but you can find much more examples in the assets folder in our page.
+NB: The XML file works for a 3 bodied Swimmer, but you can find more examples in the assets folder on this github page.
 
 In order to use another XML file, you need to follow this path:
 ```
