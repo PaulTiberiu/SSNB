@@ -103,3 +103,14 @@ Before testing Swimmer with the TD3 algorithm, you will need to create a folder 
 algos/assets
 ```
 
+### Test the Swimmer environment
+#### TD3
+To test if the Swimmer environment works, you need to follow this path:
+```
+bbrl_examples/bbrl_examples/algos/td3
+```
+Then, execute the td3.py file:
+```
+python3 td3.py
+```
+
