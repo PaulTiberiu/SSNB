@@ -70,7 +70,11 @@ NB : the following libraries need to be installed first in order for `MuJoCo` to
 sudo apt-get install patchelf
 sudo apt-get install libosmesa6-dev
 ```
-
+### Other useful installations:
+We also recommend you, in order to be sure that everything works, to make the following installation:
+```
+pip install hydra-core --upgrade --pre
+```
 ## How To
 Now, with everything installed, we can use reinforcement learning algorithms to run different environments. Here we will focus on the Swimmer environment.
 
