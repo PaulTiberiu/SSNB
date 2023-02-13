@@ -95,6 +95,18 @@ In this folder you need to search the swimmer_v3.py file and you need to replace
 ```
 xml_file="swimmer.xml"
 ```
+
+#### 2nd Case
+The other method would be to change the following function:
+```
+def make_gym_env(env_name):
+    return gym.make(env_name, xml_file="swimmer5.xml")
+```
+By using the following path:
+```
+bbrl_examples/bbrl_examples/algos/td3
+```
+
 ### Algorithms used in the Swimmer environment
 #### TD3
 TD3 is located in the bbrl_examples file, it's name is td3.py. The path is the following:
