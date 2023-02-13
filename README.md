@@ -72,7 +72,7 @@ sudo apt-get install libosmesa6-dev
 ```
 
 ## How To
-Now, with everything installed, we can use reinforcement learning algorithms to run different environments. Here we will focus on Swimmer.
+Now, with everything installed, we can use reinforcement learning algorithms to run different environments. Here we will focus on the Swimmer environment.
 
 ### XML file for Swimmer
 In order to work, the Swimmer environment needs a XML file. You can find it in the gym folder and it is named swimmer.xml. The path is the following:
