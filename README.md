@@ -85,6 +85,8 @@ gym/gym/envs/mujoco/assets
 ```
 NB: The XML file works for a 3 bodied Swimmer, but you can find more examples in the assets folder on this github page.
 
+#### 1st Case
+
 In order to use another XML file, you need to follow this path:
 ```
 gym/gym/envs/mujoco
