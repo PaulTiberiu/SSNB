@@ -97,7 +97,7 @@ xml_file="swimmer.xml"
 ```
 
 #### 2nd Case
-The other method would be to change the following function:
+The other method would be to change the following function, found in the td3.py file:
 ```
 def make_gym_env(env_name):
     return gym.make(env_name, xml_file="swimmer5.xml")
