@@ -81,16 +81,22 @@ gym/gym/envs/mujoco/assets
 ```
 NB: The XML file works for a 3 bodies Swimmer, but you can find much more examples in the assets folder in our page.
 
+In order to use another XML file, you need to follow this path:
+```
+gym/gym/envs/mujoco
+```
+In this folder you need to search the swimmer_v3.py file and you need to replace the following line of code (it can be found at the top of the file),by changing the xml file with a xml file of your choice:
+```
+xml_file="swimmer.xml"
+```
 ### Algorithms used in the Swimmer environment
 #### TD3
 TD3 is located in the bbrl_examples file, it's name is td3.py. The path is the following:
 ```
 bbrl_examples/bbrl_examples/algos/td3
 ```
-Then, in the td3.py, you can get our version of the td3.py file, that you can find in this github:
-```
+Then, you need to replace the td3.py file with our version, that you can find in the main brach of this github, in the algos folder.
 
-```
 #### (TD3) Yaml file
 Before testing Swimmer with the TD3 algorithm, you will need to create a folder in the path we precised, named configs, where you will add a yaml file, which will help Swimmer to 'swim' correctly by changing the hyperparameters. You can find the yaml file in this github page with the following path:
 ```
