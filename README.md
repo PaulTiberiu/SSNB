@@ -75,11 +75,18 @@ sudo apt-get install libosmesa6-dev
 Now, with everything installed, we can use reinforcement learning algorithms to run different environments. Here we will focus on Swimmer.
 
 ### XML file for Swimmer
-In order to work, the Swimmer environment needs a XML file. You can find this file in the gym folder and it is named swimmer.xml. The path is the following:
+In order to work, the Swimmer environment needs a XML file. You can find it in the gym folder and it is named swimmer.xml. The path is the following:
 ```
 gym/gym/envs/mujoco/assets
 ```
-NB: The XML file works for a 3 bodies Swimmer, but you can find much more examples in 
+NB: The XML file works for a 3 bodies Swimmer, but you can find much more examples in the assets folder in our page.
 
-
+### Algorithms used in the Swimmer environment
+#### TD3
+TD3 is located in the bbrl_examples file, it's name is td3.py. The path is the following:
+```
+bbrl_examples/bbrl_examples/algos/td3
+```
+##### Yaml file
+Before testing Swimmer with the TD3 algorithm, you will need to create a folder in the path we precised, named configs, where you will add a yaml file, which will help Swimmer to 'swim' correctly. You can find the yaml file
 
