@@ -87,6 +87,10 @@ TD3 is located in the bbrl_examples file, it's name is td3.py. The path is the f
 ```
 bbrl_examples/bbrl_examples/algos/td3
 ```
+Then, in the td3.py, you can get our version of the td3.py file, that you can find in this github:
+```
+
+```
 #### (TD3) Yaml file
 Before testing Swimmer with the TD3 algorithm, you will need to create a folder in the path we precised, named configs, where you will add a yaml file, which will help Swimmer to 'swim' correctly by changing the hyperparameters. You can find the yaml file in this github page with the following path:
 ```
