@@ -70,7 +70,7 @@ def create_td3_agent(cfg, train_env_agent, eval_env_agent):
 
 
 def make_gym_env(env_name):
-    return gym.make(env_name)
+    return gym.make(env_name, xml_file = "swimmer.xml")
 
 
 # Configure the optimizer
