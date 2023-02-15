@@ -312,7 +312,6 @@ def main_loop(cfg):
 @hydra.main(
     config_path="./configs/",
     config_name="ddpg_swimmer.yaml",
-    version_base="1.1",
 )
 def main(cfg: DictConfig):
     # print(OmegaConf.to_yaml(cfg))

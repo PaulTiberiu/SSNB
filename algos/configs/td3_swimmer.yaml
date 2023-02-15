@@ -1,4 +1,4 @@
-    plot_agents: True
+    plot_agents: False
     save_best: True
 
     logger:
@@ -9,20 +9,17 @@
 
     algorithm:
       seed: 4
-      buffer_size: 2e5
+      buffer_size: 1e6
       max_grad_norm: 0.5
       n_envs: 1
-      n_steps: 10000
+      n_steps: 500
       n_updates: 1
       batch_size: 64
       tau_target: 0.05
       eval_interval: 3000
-      max_epochs: 1500
+      max_epochs: 3000
       discount_factor: 0.9999
-      learning_starts: 100
-      train_freq: 1
-      normalize: False
-      noise_type: 'normal'
+      learning_starts: 10000
       policy: 'MlpPolicy'
       gradient_steps: 1
       nb_evals: 3

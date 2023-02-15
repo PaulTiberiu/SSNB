@@ -315,11 +315,7 @@ def main_loop(cfg):
 
 @hydra.main(
     config_path="./configs/",
-    # config_name="td3_swimmer.yaml",
-    # config_name="td3_cartpolecontinuous.yaml",
     config_name="td3_swimmer.yaml",
-    # config_name="td3_pendulum.yaml",
-    version_base="1.1",
 )
 def main(cfg: DictConfig):
     # print(OmegaConf.to_yaml(cfg))
