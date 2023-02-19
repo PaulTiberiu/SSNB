@@ -1,7 +1,5 @@
 # RL Project - Scalability
 
-## Goal
-
 This project aims to study the scalability of RL algorithms when the size of the problem is increased. Here, we consider the gym-based environment `Swimmer` that we tweaked to make it have any finite number of bodies.
 
 ## How to install bbrl, bbrl_gym, bbrl_examples and mujoco
