@@ -22,47 +22,12 @@ pip install -r requirements.txt
 sudo pip install -e .
 ```
 
-### Install bbrl_gym (only needed for the notebooks' scripts)
-
-The steps are similar to those of bbrl. They are the following :
-```
-git clone https://github.com/osigaud/bbrl_gym
-cd bbrl_gym
-pip install -r requirements.txt
-sudo pip install -e .
-```
-
 ### Install mujoco
 
-You should first visit `MuJoCo`'s repository : `https://github.com/openai/mujoco-py#install-mujoco` and download `MuJoCo`. Keep in mind that to proceed further in the procedure, your files should be located in the `home` directory.
-
-Decompress the downloaded archive and type the following command : 
-```
-mkdir ./mujoco
-```
-
-In order to check if the directory has been sucessfully created, type :
-```
-ls -la
-```
-
-Then, move the extracted file into the directory you have just created :
-```
-mv mujoco210 ./mujoco
-```
-
-After you are done, you need to add the following lines at the beginning of your `.bahsrc` file :
-```
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/$USERNAME$/.mujoco/mujoco210/bin
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/nvidia
-export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libGLEW.so
-```
-
-Please note that `$USERNAME$` should be replaced with your own username. Remember that to check the whole path, you can go into `MuJoCo`'s bin file and then use the `pwd` command.
+You should first install `MuJoCo` by following the steps described here : `https://github.com/openai/mujoco-py#install-mujoco`.
 
 To complete the installation, type :
 ```
-# Make sure your python environment is activated
 sudo pip install -U 'mujoco-py<2.2,>=2.1'
 ```
 
@@ -72,9 +37,9 @@ sudo apt-get install patchelf
 sudo apt-get install libosmesa6-dev
 ```
 
-### Another useful installations:
+### Update Hydra-Core
 
-We also recommend you, in order to be sure that everything works, to make the following installation :
+We also recommend you, in order to be sure that everything works, to make update `Hydra-Core` :
 ```
 pip install hydra-core --upgrade --pre
 ```
