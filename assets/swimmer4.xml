@@ -28,9 +28,9 @@
         <body name="back" pos="-1 0 0">
           <geom density="1000" fromto="0 0 0 -1 0 0" size="0.1" type="capsule"/>
           <joint axis="0 0 1" limited="true" name="motor2_rot" pos="0 0 0" range="-100 100" type="hinge"/>
-	  <body name="ex1" pos="-1 0 0">
+	        <body name="corps1" pos="-1 0 0">
             <geom density="1000" fromto="0 0 0 -1 0 0" size="0.1" type="capsule"/>
-            <joint axis="0 0 1" limited="true" name="motor_ex1_rot" pos="0 0 0" range="-100 100" type="hinge"/>
+            <joint axis="0 0 1" limited="true" name="motor3_rot" pos="0 0 0" range="-100 100" type="hinge"/>
           </body>
         </body>
       </body>
@@ -39,6 +39,6 @@
   <actuator>
     <motor ctrllimited="true" ctrlrange="-1 1" gear="150.0" joint="motor1_rot"/>
     <motor ctrllimited="true" ctrlrange="-1 1" gear="150.0" joint="motor2_rot"/>
-    <motor ctrllimited="true" ctrlrange="-1 1" gear="150.0" joint="motor_ex1_rot"/>
+    <motor ctrllimited="true" ctrlrange="-1 1" gear="150.0" joint="motor3_rot"/>
   </actuator>
 </mujoco>

@@ -28,13 +28,13 @@
         <body name="back" pos="-1 0 0">
           <geom density="1000" fromto="0 0 0 -1 0 0" size="0.1" type="capsule"/>
           <joint axis="0 0 1" limited="true" name="motor2_rot" pos="0 0 0" range="-100 100" type="hinge"/>
-	  <body name="ex1" pos="-1 0 0">
+	        <body name="corps1" pos="-1 0 0">
             <geom density="1000" fromto="0 0 0 -1 0 0" size="0.1" type="capsule"/>
             <joint axis="0 0 1" limited="true" name="motor3_rot" pos="0 0 0" range="-100 100" type="hinge"/>
-            <body name="ex1" pos="-1 0 0">
+            <body name="corps2" pos="-1 0 0">
               <geom density="1000" fromto="0 0 0 -1 0 0" size="0.1" type="capsule"/>
               <joint axis="0 0 1" limited="true" name="motor4_rot" pos="0 0 0" range="-100 100" type="hinge"/>
-              <body name="ex2" pos="-1 0 0">
+              <body name="corps3" pos="-1 0 0">
                 <geom density="1000" fromto="0 0 0 -1 0 0" size="0.1" type="capsule"/>
                 <joint axis="0 0 1" limited="true" name="motor5_rot" pos="0 0 0" range="-100 100" type="hinge"/>
               </body>
