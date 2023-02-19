@@ -34,6 +34,8 @@ import matplotlib
 
 matplotlib.use("TkAgg")
 
+assets_path = os.getcwd() + "/../assets/"
+
 
 # Create the TD3 Agent
 def create_td3_agent(cfg, train_env_agent, eval_env_agent):
@@ -69,8 +71,9 @@ def create_td3_agent(cfg, train_env_agent, eval_env_agent):
     )
 
 
-def make_gym_env(env_name):
-    return gym.make(env_name, xml_file = "swimmer.xml")
+def make_gym_env(env_name, xml_file):
+    xml_file = assets_path + xml_file
+    return gym.make(env_name, xml_file=xml_file)
 
 
 # Configure the optimizer
