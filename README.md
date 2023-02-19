@@ -14,7 +14,7 @@ sudo pip install -e .
 ```
 
 ### Install bbrl_examples
-For bbrl_examples, the steps are also similar:
+For `bbrl_examples`, the steps are also similar:
 ```
 git clone https://github.com/osigaud/bbrl_examples
 cd bbrl_examples
@@ -45,11 +45,11 @@ pip install hydra-core --upgrade --pre
 ```
 
 ## How to Run our Program
-Now, with everything installed, we can use reinforcement learning algorithms to run different environments. Here we will focus on the Swimmer environment.
+Now, with everything installed, we can use reinforcement learning algorithms to run different environments. Here we will focus on the `Swimmer` environment.
 
 ### XML file for Swimmer
 
-In order to work, the Swimmer environment needs a XML file. We have already prodided you a bunch of XML files located in the `assets` directory.
+In order to work, the `Swimmer` environment needs a XML file. We have already prodided you a bunch of XML files located in the `assets` directory.
 
 ### Algorithms used in the Swimmer environment
 
@@ -57,5 +57,5 @@ For now, only two algorithms are at your disposal : `TD3` and `DDPG`. Their scri
 
 ### Run the Swimmer environment
 
-In order to run a Swimmer environment, you only need to execute the algorithms' scripts mentionned beforehand. You can change the number of joints and bodies by changing the `config_name` variable located near the end of the scripts.<br>
-E.G. : in `td3.py` you can replace the default `config_name` by `"td3_swimmer6.yaml"` in order to get a swimmer with 6 bodies
+In order to run a `Swimmer` environment, you only need to execute the algorithms' scripts mentionned beforehand. You can change the number of joints and bodies by changing the `config_name` variable located near the end of the scripts.<br>
+E.G. : in `td3.py` you can replace the default `config_name` by `"td3_swimmer6.yaml"` in order to get a `Swimmer` environment with 6 bodies
