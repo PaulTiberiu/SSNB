@@ -31,7 +31,7 @@ To complete the installation, type :
 sudo pip install -U 'mujoco-py<2.2,>=2.1'
 ```
 
-NB : the following libraries need to be installed first in order for `MuJoCo` to work properly :
+**NB :** the following libraries need to be installed first in order for `MuJoCo` to work properly :
 ```
 sudo apt-get install patchelf
 sudo apt-get install libosmesa6-dev
