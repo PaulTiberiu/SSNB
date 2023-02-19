@@ -74,64 +74,25 @@ NB : the following libraries need to be installed first in order for `MuJoCo` to
 sudo apt-get install patchelf
 sudo apt-get install libosmesa6-dev
 ```
-### Other useful installations:
-We also recommend you, in order to be sure that everything works, to make the following installation:
+
+### Another useful installations:
+
+We also recommend you, in order to be sure that everything works, to make the following installation :
 ```
 pip install hydra-core --upgrade --pre
 ```
-## How To
+
+## How to Run our Program
 Now, with everything installed, we can use reinforcement learning algorithms to run different environments. Here we will focus on the Swimmer environment.
 
 ### XML file for Swimmer
-In order to work, the Swimmer environment needs a XML file. You can find it in the gym folder and it is named swimmer.xml. The path is the following:
-```
-gym/gym/envs/mujoco/assets
-```
-NB: The XML file works for a 3 bodied Swimmer, but you can find more examples in the assets folder on this github page.
 
-#### 1st Case
-
-In order to use another XML file, you need to follow this path:
-```
-gym/gym/envs/mujoco
-```
-In this folder you need to search the swimmer_v3.py file and you need to replace the following line of code (it can be found at the top of the file),by changing the "swimmer.xml" file with a .xml file of your choice:
-```
-xml_file="swimmer.xml"
-```
-
-#### 2nd Case
-The other method would be to change the following function, found in the td3.py file:
-```
-def make_gym_env(env_name):
-    return gym.make(env_name, xml_file="swimmer5.xml")
-```
-By using the following path:
-```
-bbrl_examples/bbrl_examples/algos/td3
-```
+In order to work, the Swimmer environment needs a XML file. We have already prodided you a bunch of XML files located in the `assets` directory.
 
 ### Algorithms used in the Swimmer environment
-#### TD3
-TD3 is located in the bbrl_examples file, it's name is td3.py. The path is the following:
-```
-bbrl_examples/bbrl_examples/algos/td3
-```
-Then, you need to replace the td3.py file with our version, that you can find in the main brach of this github, in the algos folder.
 
-#### (TD3) Yaml file
-Before testing Swimmer with the TD3 algorithm, you will need to create a folder in the path we precised, named configs, where you will add a yaml file, which will help Swimmer to 'swim' correctly by changing the hyperparameters. You can find the yaml file in this github page with the following path:
-```
-algos/assets
-```
+For now, only two algorithms are at your disposal : `TD3` and `DDPG`. Their scripts can be found in the `algos` directory.
 
-### Test the Swimmer environment
-#### TD3
-To test if the Swimmer environment works, you need to follow this path:
-```
-bbrl_examples/bbrl_examples/algos/td3
-```
-Then, execute the td3.py file:
-```
-python3 td3.py
-```
+### Run the Swimmer environment
+
+In order to run a Swimmer environment, you only need to execute the algorithms' scripts mentionned beforehand. You can change the number of joints and bodies by changing the `config_name` variable located near the end of the scripts. E.G. : in `td3.py` you can replace the default `config_name` by `td3_swimmer6.yaml` in order to get a swimmer with 6 bodies
