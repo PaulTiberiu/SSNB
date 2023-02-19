@@ -317,7 +317,7 @@ def main_loop(cfg):
 
 
 @hydra.main(
-    config_path="./configs/",
+    config_path="./configs/td3/",
     config_name="td3_swimmer.yaml",
 )
 def main(cfg: DictConfig):

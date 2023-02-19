@@ -3,7 +3,7 @@
 
     logger:
       classname: bbrl.utils.logger.TFLogger
-      log_dir: ./ddpg_logs/
+      log_dir: ./td3_logs/
       verbose: False
       every_n_seconds: 10
 
@@ -31,7 +31,7 @@
     gym_env:
       classname: __main__.make_gym_env
       env_name: Swimmer-v3
-      xml_file: ../../assets/swimmer5.xml
+      xml_file: swimmer7.xml
 
     actor_optimizer:
       classname: torch.optim.Adam

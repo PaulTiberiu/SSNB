@@ -33,6 +33,8 @@ import matplotlib.pyplot as plt
 
 matplotlib.use("TkAgg")
 
+assets_path = os.getcwd() + "/../assets/"
+
 
 def soft_update_params(net, target_net, tau):
     for param, target_param in zip(net.parameters(), target_net.parameters()):
@@ -61,8 +63,9 @@ def create_ddpg_agent(cfg, train_env_agent, eval_env_agent):
     return train_agent, eval_agent, actor, critic, target_critic  # , target_actor
 
 
-def make_gym_env(env_name):
-    return gym.make(env_name)
+def make_gym_env(env_name, xml_file):
+    xml_file = assets_path + xml_file
+    return gym.make(env_name, xml_file)
 
 
 # Configure the optimizer
@@ -310,7 +313,7 @@ def main_loop(cfg):
 
 
 @hydra.main(
-    config_path="./configs/",
+    config_path="./configs/ddpg/",
     config_name="ddpg_swimmer.yaml",
 )
 def main(cfg: DictConfig):
@@ -321,17 +324,3 @@ def main(cfg: DictConfig):
 if __name__ == "__main__":
     sys.path.append(os.getcwd())
     main()
-Footer
-© 2023 GitHub, Inc.
-Footer navigation
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
