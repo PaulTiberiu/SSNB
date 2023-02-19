@@ -15,6 +15,14 @@ pip install -r requirements.txt
 sudo pip install -e .
 ```
 
+### Install bbrl_examples
+For bbrl_examples, the steps are also similar:
+```
+git clone https://github.com/osigaud/bbrl_examples
+cd bbrl_examples
+pip install -r requirements.txt
+sudo pip install -e .
+```
 
 ### Install bbrl_gym (only needed for the notebooks' scripts)
 
@@ -22,15 +30,6 @@ The steps are similar to those of bbrl. They are the following :
 ```
 git clone https://github.com/osigaud/bbrl_gym
 cd bbrl_gym
-pip install -r requirements.txt
-sudo pip install -e .
-```
-
-### Install bbrl_examples
-For bbrl_examples, the steps are also similar:
-```
-git clone https://github.com/osigaud/bbrl_examples
-cd bbrl_examples
 pip install -r requirements.txt
 sudo pip install -e .
 ```
