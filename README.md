@@ -10,6 +10,7 @@ This project aims to study the scalability of RL algorithms when the size of the
 After cloning the Github repository, you should install the required libraries. Here is the whole process :
 ```
 git clone https://github.com/osigaud/bbrl
+cd bbrl
 pip install -r requirements.txt
 sudo pip install -e .
 ```
@@ -20,6 +21,7 @@ sudo pip install -e .
 The steps are similar to those of bbrl. They are the following :
 ```
 git clone https://github.com/osigaud/bbrl_gym
+cd bbrl_gym
 pip install -r requirements.txt
 sudo pip install -e .
 ```
@@ -28,6 +30,7 @@ sudo pip install -e .
 For bbrl_examples, the steps are also similar:
 ```
 git clone https://github.com/osigaud/bbrl_examples
+cd bbrl_examples
 pip install -r requirements.txt
 sudo pip install -e .
 ```
