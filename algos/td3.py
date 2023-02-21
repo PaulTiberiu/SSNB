@@ -251,7 +251,7 @@ def run_td3(cfg, reward_logger):
         if nb_steps - tmp_steps > cfg.algorithm.eval_interval:
             tmp_steps = nb_steps
             eval_workspace = Workspace()  # Used for evaluation
-            eval_agent(eval_workspace, t=0, stop_variable="env/done",render=True)
+            eval_agent(eval_workspace, t=0, stop_variable="env/done",render=False)
 
             rewards = eval_workspace["env/cumulated_reward"]
             q_agent_1(eval_workspace, t=0, stop_variable="env/done")
@@ -286,13 +286,13 @@ def run_td3(cfg, reward_logger):
                         best_reward,
                         stochastic=False,
                     )
-                plot_critic(
-                    q_agent_1.agent,  # TODO: do we want to plot both critics?
-                    eval_env_agent,
-                    "./td3_plots/",
-                    cfg.gym_env.env_name,
-                    nb_steps,
-                )
+                    plot_critic(
+                        q_agent_1.agent,  # TODO: do we want to plot both critics?
+                        eval_env_agent,
+                        "./td3_plots/",
+                        cfg.gym_env.env_name,
+                        nb_steps,
+                    )
     delta_list_mean = np.array(delta_list).mean(axis=1)
     delta_list_std = np.array(delta_list).std(axis=1)
     return delta_list_mean, delta_list_std
