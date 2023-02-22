@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 import gym
-import my_gym
 import hydra
 
 from omegaconf import DictConfig
