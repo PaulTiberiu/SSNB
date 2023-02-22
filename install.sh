@@ -3,9 +3,13 @@
 echo "Do you wish to proceed with the installation of SSNB ? [y/n] "
 read answer
 
-if [answer == 'y' || answer == 'Y']
+if [$(answer)="y" || $(answer)="Y"]
 then
-    ssnb_directory = `pwd`
+    ssnb_directory=$(pwd)
+
+    sudo apt install git
+    sudo apt install python3-pip
+    sudo apt install curl
 
     echo "=== Installing bbrl ===\n"
     git clone https://github.com/osigaud/bbrl
@@ -27,7 +31,7 @@ then
     mkdir .mujoco/
     mv $ssnb_directory/mujoco210/ .mujoco/
 
-    home_directory = `pwd`
+    home_directory=$(pwd)
     echo "export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:$home_directory/.mujoco/mujoco210/bin" > .bashrc
     echo "export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:/usr/lib/nvidia" > .bashrc
     echo "export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libGLEW.so" > .bashrc
