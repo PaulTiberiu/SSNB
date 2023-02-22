@@ -1,3 +1,5 @@
+#!/bin/bash
+
 while true; do
     read -p "Do you wish to proceed with the installation of SSNB ? [y/n] " answer
     case $answer in
