@@ -70,4 +70,4 @@ For now, only two algorithms are at your disposal: `TD3` and `DDPG`. Their scrip
 ### Run the Swimmer environment
 
 In order to run a `Swimmer` environment, you only need to execute the algorithms' scripts mentionned beforehand. You can change the number of joints and bodies by changing the `config_name` variable located near the end of the scripts.<br>
-E.G. : in `td3.py` you can replace the default `config_name` by `"td3_swimmer6.yaml"` in order to get a `Swimmer` environment with 6 bodies
+For example, in `td3.py` you can replace the default `config_name` by `"td3_swimmer6.yaml"` in order to get a `Swimmer` environment with 6 bodies
