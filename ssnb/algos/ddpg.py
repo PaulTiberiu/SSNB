@@ -226,7 +226,7 @@ def run_ddpg(cfg, reward_logger):
         if nb_steps - tmp_steps > cfg.algorithm.eval_interval:
             tmp_steps = nb_steps
             eval_workspace = Workspace()  # Used for evaluation
-            eval_agent(eval_workspace, t=0, stop_variable="env/done",render=True)
+            eval_agent(eval_workspace, t=0, stop_variable="env/done",render=cfg.render_agents) # Used for render
 
             rewards = eval_workspace["env/cumulated_reward"]
             q_agent(eval_workspace, t=0, stop_variable="env/done")
