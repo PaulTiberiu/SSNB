@@ -37,9 +37,9 @@ mkdir .mujoco/
 mv mujoco210/ .mujoco/
 
 home_directory=$(pwd)
-echo "export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:$home_directory/.mujoco/mujoco210/bin" > .bashrc
-echo "export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:/usr/lib/nvidia" > .bashrc
-echo "export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libGLEW.so" > .bashrc
+echo "export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:$home_directory/.mujoco/mujoco210/bin" >> ~/.bashrc
+echo "export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:/usr/lib/nvidia" >> ~/.bashrc
+echo "export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libGLEW.so" >> ~/.bashrc
 
 echo "=== Installing SSNB ===\n"
 cd $ssnb_directory
