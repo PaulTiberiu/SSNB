@@ -9,10 +9,18 @@
 
 SSNB's code being hugely inspired from `bbrl` and `bbrl_examples`, here are the links to these repositories: [bbrl](https://github.com/osigaud/bbrl) and [bbrl_examples](https://github.com/osigaud/bbrl_examples).
 
-## How to install bbrl and MuJoCo
+
+## How to install SSNB
+
+After cloning our Github repository, you first need to type the following command in SSNB's repository:
+```
+sudo pip install -e .
+```
+
+
 ### Install bbrl
 
-After cloning the Github repository, you should install the required libraries. Here is the whole process:
+Then, you should install the required libraries. Here is the whole process:
 ```
 git clone https://github.com/osigaud/bbrl
 cd bbrl
@@ -22,7 +30,7 @@ sudo pip install -e .
 
 ### Install MuJoCo
 
-You should first install `MuJoCo` by following the steps described here: [Install MuJoCo](https://github.com/openai/mujoco-py#install-mujoco).
+You can install `MuJoCo` by following the steps described here: [Install MuJoCo](https://github.com/openai/mujoco-py#install-mujoco).
 
 To complete the installation, type:
 ```
@@ -44,17 +52,9 @@ pip install hydra-core --upgrade --pre
 ```
 
 
-### Install SSNB
-
-Finally, you need to type the following command in SSNB's repository:
-```
-sudo pip install -e .
-```
-
-
 ## How to Run our Program
 
-Now, with everything installed, we can use reinforcement learning algorithms to run different environments. Here we will focus on the `Swimmer` environment.
+Now that everything is installed, we can use reinforcement learning algorithms to run different environments. Here we will focus on the `Swimmer` environment.
 
 
 ### XML file for Swimmer
