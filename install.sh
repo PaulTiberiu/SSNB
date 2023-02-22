@@ -1,3 +1,5 @@
+#!/bin/bash
+
 echo "Do you wish to proceed with the installation of SSNB ? [y/n] "
 read answer
 
