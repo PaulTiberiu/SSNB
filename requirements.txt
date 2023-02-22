@@ -5,6 +5,7 @@ matplotlib~=3.5.2
 mujoco-py<2.2,>=2.1
 numpy>=1.19.1
 omegaconf~=2.1.1
+pandas
 setuptools~=60.2.0
 tensorboard
 torch
