@@ -59,7 +59,7 @@ In order to work, the `Swimmer` environment needs a XML file. We have already pr
 Right now, only two algorithms are available: `TD3` and `DDPG`. Their scripts can be found in the `algos` directory.
 
 
-### Run the Swimmer environment
+### Run your own simulation
 
 In order to run a `Swimmer` environment, you only need to execute the algorithms' scripts mentionned beforehand. You can change the number of joints and bodies by changing the `config_name` variable located near the end of the scripts. For example, in `td3.py` you can replace the default `config_name` by `"td3_swimmer6.yaml"` in order to get a `Swimmer` environment with 6 bodies.
 
