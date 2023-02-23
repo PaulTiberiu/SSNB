@@ -20,6 +20,7 @@ echo "=== Installing bbrl ===\n"
 git clone https://github.com/osigaud/bbrl
 cd bbrl/
 sudo pip install -e .
+sudo pip install hydra-core --upgrade --pre
 
 cd ../
 
@@ -33,6 +34,7 @@ curl -o mujoco210-linux-x86_64.tar.gz https://mujoco.org/download/mujoco210-linu
 tar -xvf mujoco210-linux-x86_64.tar.gz -C ~/
 rm -rf mujoco210-linux-x86_64.tar.gz
 cd ~/
+rm -rf .mujoco/
 mkdir .mujoco/
 mv mujoco210/ .mujoco/
 

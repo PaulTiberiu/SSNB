@@ -1,26 +1,26 @@
-import sys
-import os
 import copy
-import numpy as np
-import torch
-import torch.nn as nn
 import gym
 import hydra
+import numpy as np
+import os
+import sys
+import torch
+import torch.nn as nn
 
 from omegaconf import DictConfig
 
 from bbrl import get_arguments, get_class
-from bbrl.workspace import Workspace
 from bbrl.agents import Agents, TemporalAgent
 from bbrl.agents.gymb import AutoResetGymAgent, NoAutoResetGymAgent
 from bbrl.utils.chrono import Chrono
 from bbrl.utils.replay_buffer import ReplayBuffer
+from bbrl.workspace import Workspace
 
-from ssnb.models.loggers import Logger, RewardLogger
 from ssnb.models.actors import ContinuousDeterministicActor
 from ssnb.models.critics import ContinuousQAgent
-from ssnb.models.shared_models import soft_update_params
 from ssnb.models.exploration_agents import AddGaussianNoise
+from ssnb.models.loggers import Logger, RewardLogger
+from ssnb.models.shared_models import soft_update_params
 
 # HYDRA_FULL_ERROR = 1
 
