@@ -2,25 +2,14 @@
 
 ![SSNB Banner](https://github.com/PaulTiberiu/SSNB/blob/main/SSNB.png)
 
-`SSNB` stands for "Scalability for Swimmer with N Bodies". This project aims to study the scalability of RL algorithms when the size of the problem is increased. Here, we consider the gym-based environment `Swimmer` that we tweaked to make it have any finite number of bodies.
+`SSNB` stands for "Scalability for Swimmer with N Bodies". This project aims to study the scalability of RL algorithms when the size of the problem is increased. We thus consider the gym-based environment `Swimmer` that we tweaked to make it have any finite number of bodies. SSNB's code being greatly inspired from `bbrl` and `bbrl_examples`, here are the links to these repositories: [bbrl](https://github.com/osigaud/bbrl) and [bbrl_examples](https://github.com/osigaud/bbrl_examples).
 
 
-## Sources
-
-SSNB's code being hugely inspired from `bbrl` and `bbrl_examples`, here are the links to these repositories: [bbrl](https://github.com/osigaud/bbrl) and [bbrl_examples](https://github.com/osigaud/bbrl_examples).
-
-
-## How to install SSNB
-
-After cloning our Github repository, you first need to type the following command in SSNB's repository:
-```
-sudo pip install -e .
-```
-
+## Install SSNB
 
 ### Install bbrl
 
-Then, you should install the required libraries. Here is the whole process:
+You should first install `bbrl`. Here is the whole process:
 ```
 git clone https://github.com/osigaud/bbrl
 cd bbrl
@@ -28,14 +17,17 @@ sudo pip install -e .
 ```
 
 
+### Update Hydra-Core
+
+In order to make sure that everything works, please update `Hydra-Core`:
+```
+pip install hydra-core --upgrade --pre
+```
+
+
 ### Install MuJoCo
 
 You can install `MuJoCo` by following the steps described here: [Install MuJoCo](https://github.com/openai/mujoco-py#install-mujoco).
-
-To complete the installation, type:
-```
-sudo pip install -U 'mujoco-py<2.2,>=2.1'
-```
 
 **NB:** the following libraries need to be installed first in order for `MuJoCo` to work properly:
 ```
@@ -44,15 +36,15 @@ sudo apt-get install libosmesa6-dev
 ```
 
 
-### Update Hydra-Core
+### Install the SSNB package
 
-Also, in order to be sure that everything works, make sure to update `Hydra-Core`:
+Finally, type the following command in SSNB's repository:
 ```
-pip install hydra-core --upgrade --pre
+sudo pip install -e .
 ```
 
 
-## How to Run our Program
+## Run SSNB
 
 Now that everything is installed, we can use reinforcement learning algorithms to run different environments. Here we will focus on the `Swimmer` environment.
 
@@ -64,10 +56,9 @@ In order to work, the `Swimmer` environment needs a XML file. We have already pr
 
 ### Algorithms used in the Swimmer environment
 
-For now, only two algorithms are at your disposal: `TD3` and `DDPG`. Their scripts can be found in the `algos` directory.
+Right now, only two algorithms are available: `TD3` and `DDPG`. Their scripts can be found in the `algos` directory.
 
 
 ### Run the Swimmer environment
 
-In order to run a `Swimmer` environment, you only need to execute the algorithms' scripts mentionned beforehand. You can change the number of joints and bodies by changing the `config_name` variable located near the end of the scripts.<br>
-For example, in `td3.py` you can replace the default `config_name` by `"td3_swimmer6.yaml"` in order to get a `Swimmer` environment with 6 bodies
+In order to run a `Swimmer` environment, you only need to execute the algorithms' scripts mentionned beforehand. You can change the number of joints and bodies by changing the `config_name` variable located near the end of the scripts. For example, in `td3.py` you can replace the default `config_name` by `"td3_swimmer6.yaml"` in order to get a `Swimmer` environment with 6 bodies.
