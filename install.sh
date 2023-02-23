@@ -29,6 +29,7 @@ sudo apt-get install libgl1-mesa-glx
 sudo apt-get install libglfw3
 sudo apt-get install libosmesa6-dev
 sudo apt-get install patchelf
+sudo ln -s /usr/lib/x86_64-linux-gnu/libGL.so.1 /usr/lib/x86_64-linux-gnu/libGL.so
 
 echo "=== Installing MuJoCo ==="
 curl -o mujoco210-linux-x86_64.tar.gz https://mujoco.org/download/mujoco210-linux-x86_64.tar.gz
