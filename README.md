@@ -30,6 +30,7 @@ If you want to render the agent, you have to set the `render_agents` parameter t
 
 Installing `SSNB` is actually quite easy as all you need to do is executing our shell script:
 ```
+chmod u+x install.sh
 ./install.sh
 ```
 
@@ -76,14 +77,6 @@ sudo pip install -e .
 
 
 ### Troubleshooting
-
-#### Script issues
-
-If you can't run the `install.sh` executable, please retry after typing the following command in `SSNB`'s directory:
-```
-chmod u+x install.sh
-```
-
 
 #### MuJoCo issues
 
