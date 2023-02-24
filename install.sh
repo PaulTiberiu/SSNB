@@ -27,6 +27,7 @@ cd ../
 
 echo "=== Installing dependencies for MuJoCo ==="
 sudo apt-get install libgl1-mesa-glx
+sudo apt-get install libglew-dev
 sudo apt-get install libglfw3
 sudo apt-get install libosmesa6-dev
 sudo apt-get install patchelf
