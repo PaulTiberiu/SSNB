@@ -20,8 +20,8 @@ echo "=== Installing bbrl ==="
 cd ../
 git clone https://github.com/osigaud/bbrl
 cd bbrl/
-sudo pip install -e .
-sudo pip install hydra-core --upgrade --pre
+pip install .
+pip install hydra-core --upgrade --pre
 
 cd ../
 
