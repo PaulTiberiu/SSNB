@@ -49,6 +49,6 @@ echo "export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libGLEW.so" >> ~/.bashrc
 
 echo "=== Installing SSNB ==="
 cd $ssnb_directory
-sudo pip install -e .
+pip install .
 
 echo "Installation successful"

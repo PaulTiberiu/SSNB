@@ -22,7 +22,7 @@ from ssnb.models.actors import ContinuousDeterministicActor
 from ssnb.models.critics import ContinuousQAgent
 from ssnb.models.exploration_agents import AddGaussianNoise
 from ssnb.models.loggers import Logger, RewardLogger
-from ssnb.plotters import Plotter
+from ssnb.models.plotters import Plotter
 
 # HYDRA_FULL_ERROR = 1
 
