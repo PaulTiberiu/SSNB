@@ -17,6 +17,7 @@ sudo apt-get install python3-pip
 ssnb_directory=$(pwd)
 
 echo "=== Installing bbrl ==="
+cd ../
 git clone https://github.com/osigaud/bbrl
 cd bbrl/
 sudo pip install -e .
