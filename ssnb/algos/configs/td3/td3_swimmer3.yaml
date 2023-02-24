@@ -1,4 +1,4 @@
-    render_agents: False
+    plot_agents: False
     save_best: True
 
     logger:
@@ -12,21 +12,21 @@
       buffer_size: 1e6
       max_grad_norm: 0.5
       n_envs: 1
-      n_steps: 500
+      n_steps: 1000
       n_updates: 1
-      batch_size: 64
-      tau_target: 0.05
+      batch_size: 256
+      tau_target: 0.005
       eval_interval: 3000
-      max_epochs: 3000
+      max_epochs: 1500
       discount_factor: 0.9999
-      learning_starts: 10000
+      learning_starts: 100
       policy: 'MlpPolicy'
       gradient_steps: 1
       nb_evals: 3
       action_noise: 0.1
       architecture:
-        actor_hidden_size: [25, 25]
-        critic_hidden_size: [25, 25]
+        actor_hidden_size: [32, 256]
+        critic_hidden_size: [32, 256]
 
     gym_env:
       classname: __main__.make_gym_env
