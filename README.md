@@ -26,7 +26,7 @@ If you want to render the agent, you have to set the `render_agents` parameter t
 
 ## Install SSNB
 
-### Using the bash script
+### Using the shell script
 
 Installing `SSNB` is actually quite easy as all you need to do is executing our shell script:
 ```
@@ -94,14 +94,14 @@ If you have trouble with `MuJoCo`, you may want to refer to the following links:
 
 #### Python import errors
 
-If you have import errors when running any RL algorithm, it is probably because the repository has not been appended to your `sys.path`. You can:
+If you have import errors when running any RL algorithm, it is probably because the repository has not been appended to your `sys.path`. You can either:
 
-1. Reinstall any package that `Python` fails to import. In the correct directory, type:
+- Reinstall any package that `Python` fails to import. In the correct directory, type:
 ```
 sudo pip install -e .
 ```
 
-2. Add the package path in the program:
+- Or add the package path in the program:
 ```
 # If sys has not been imported previously:
 import sys
