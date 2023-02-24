@@ -62,6 +62,7 @@ You can install `MuJoCo` by following the steps described here: [Install MuJoCo]
 **NB:** the following libraries need to be installed first in order for `MuJoCo` to work properly:
 ```
 sudo apt-get install libgl1-mesa-glx
+sudo apt-get install libglew-dev
 sudo apt-get install libglfw3
 sudo apt-get install libosmesa6-dev
 sudo apt-get install patchelf
