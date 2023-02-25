@@ -342,7 +342,7 @@ class ContinuousDeterministicActor(BaseActor):
             layers, activation=nn.Tanh(), output_activation=nn.Tanh()
         )
 
-    def forward(self, t):
+    def forward(self, t, render=None):
         obs = self.get(("env/env_obs", t))
         action = self.model(obs)
         self.set(("action", t), action)
