@@ -8,7 +8,7 @@ This is a test of a `TD3` agent playing `Swimmer_v3` using `stable-baselines3` l
 
 
 
-## Github repositories
+## Featured Github repositories
 
  - [RL Zoo](https://github.com/DLR-RM/rl-baselines3-zoo)
  - [SB3](https://github.com/DLR-RM/stable-baselines3)
