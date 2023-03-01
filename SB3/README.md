@@ -109,6 +109,8 @@ These commands generate an `mp4` file, to convert to `gif`, and it at the end of
 
 This is the model we had after training a TD3 agent playing Swimmer-v3, using the optimum hyperparameters for that specific environnement.
 
+The model can be found in the `logs` folder above
+
 ### Hyperparameters
 
 Source: https://huggingface.co/sb3/td3-Swimmer-v3
@@ -125,9 +127,11 @@ OrderedDict([('gamma', 0.9999),
              ('normalize', False)])
 ```
 
-### Curves
+### Learing curves
 
-#### reward
+Using the command mentioned earlier, we were able to track the reward data throughout the training of our agent
+
+#### reward curve
 
 
 
