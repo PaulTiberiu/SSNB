@@ -82,9 +82,9 @@ yields a tracked experiment at this [URL](https://wandb.ai/openrlbenchmark/sb3/r
 
 ### First use
 
-When you type the commande given above for the first time on your machine, you will have to create a wandb account and follow the rest of the instructions given on the terminal
+When you type the commande given above for the first time on your machine, you will have to create a `wandb` account and follow the rest of the instructions given on the terminal
 
-Then, the experiment tracking will be available on your home page
+Then, the experiment tracking will be available on your `wandb` home page
 
 ## Record a video of an agent
 
