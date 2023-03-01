@@ -67,7 +67,7 @@ rl_zoo3 train --algo td3 --env Swimmer-v3 -f logs/
 Now that you have a trained model, if you want to visualize it, simply run:
 
 ```bash
-rl_zoo3 enjoy --algo td3 --env Swimmer-v3  -f logs/
+rl_zoo3 enjoy --algo td3 --env Swimmer-v3 -f logs/
 ```
 
 
