@@ -72,7 +72,7 @@ rl_zoo3 enjoy --algo algo_name --env env_id -f logs/ --exp-id 0
 ```
 ## Experiment tracking
 
-RL Zoo offers the possibility to visualize experiment tracking data such as learning curves, during or after the training
+RL Zoo offers the possibility to visualize experiment tracking data such as learning curves for an agent's training
 
 The following command:
 ```bash
