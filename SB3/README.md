@@ -17,8 +17,7 @@ This is a test of a `TD3` agent playing `Swimmer_v3` using `stable-baselines3` l
 
 ## Installation
 
-To run this part of the project, you will need to install the libraries mentio
-ned above. 
+To run this part of the project, you will need to install the libraries mentioned above. 
 
 ### Install RL Zoo
 
