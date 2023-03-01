@@ -107,7 +107,7 @@ These commands generate an `mp4` file, to convert to `gif`, and it at the end of
 
 ## Our results
 
-This is the model we had after training a TD3 agent playing Swimmer-v3, using the optimum hyperparameters for that specific environnement.
+This is the model we had after training a `TD3` agent playing `Swimmer-v3`, using the optimum hyperparameters for that specific environnement.
 
 The model can be found in the `logs` folder above
 
