@@ -72,7 +72,7 @@ rl_zoo3 enjoy --algo algo_name --env env_id -f logs/ --exp-id 0
 ```
 ## Experiment tracking
 
-RL Zoo offers the possibility to visualize experiment data such as learning curves via [Weights and Biases](https://wandb.ai/))
+RL Zoo offers the possibility to visualize experiment data such as learning curves via [Weights and Biases](https://wandb.ai/)
 
 The following command:
 ```bash
