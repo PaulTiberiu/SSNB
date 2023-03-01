@@ -3,7 +3,7 @@
 
 
 
-This is a test of a `TD3` agent playing `Swimmer_v3` using `stable-baselines3` library and the `RL Zoo`.
+This is a test of a `TD3` agent playing `Swimmer_v3` using the `stable-baselines3` and the `RL Zoo` libraries.
 
 
 
@@ -53,9 +53,6 @@ sudo pip install sb3-contrib
 ```
 Now that all the needed libraries are installed, you can train an agent.
 
-
-
-
 ## Training
 
 To train a TD3 agent on the Swimmer_v3 environnement, follow these simple steps:
@@ -70,7 +67,6 @@ Now that you have a trained model, if you want to visualize it, simply run:
 # exp-id 0 corresponds to the last experiment, otherwise, you can specify another ID
 rl_zoo3 enjoy --algo algo_name --env env_id -f logs/ --exp-id 0
 ```
-
 
 ## Our results
 
