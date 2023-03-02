@@ -131,9 +131,14 @@ OrderedDict([('gamma', 0.9999),
 
 Using the command mentioned earlier, we were able to track the reward data throughout the training of our agent
 
-#### reward curve
+#### Reward curve
 
 ![reward curve](https://github.com/PaulTiberiu/SSNB/blob/main/SB3/reward_curve.png)
+
+#### Run summary
+
+![Run summary](https://github.com/PaulTiberiu/SSNB/blob/main/SB3/Run_summary.png)
+
 
 
 
