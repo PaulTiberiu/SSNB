@@ -3,7 +3,7 @@
 
 
 
-This is a test of a `TD3` agent playing `Swimmer_v3` using `stable-baselines3` library and the `RL Zoo`.
+This is a test of a `TD3` agent playing `Swimmer_v3` using `stable-baselines3` and the `RL Zoo` libraries.
 
 
 
