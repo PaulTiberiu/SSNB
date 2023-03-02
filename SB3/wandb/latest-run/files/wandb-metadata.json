@@ -1,0 +1,70 @@
+{
+    "os": "Linux-5.10.0-21-amd64-x86_64-with-glibc2.31",
+    "python": "3.9.16",
+    "heartbeatAt": "2023-03-01T20:33:30.404974",
+    "startedAt": "2023-03-01T20:33:29.591771",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--algo",
+        "td3",
+        "--env",
+        "Swimmer-v3",
+        "--track",
+        "--wandb-project-name",
+        "sb3",
+        "--wandb-tags",
+        "Soufiane"
+    ],
+    "state": "running",
+    "program": "/home/soufiane/anaconda3/envs/envSB3/bin/rl_zoo3",
+    "host": "RLprojet",
+    "username": "soufiane",
+    "executable": "/home/soufiane/anaconda3/envs/envSB3/bin/python",
+    "cpu_count": 6,
+    "cpu_count_logical": 6,
+    "cpu_freq": {
+        "current": 3293.8119999999994,
+        "min": 0.0,
+        "max": 0.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3293.812,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3293.812,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3293.812,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3293.812,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3293.812,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3293.812,
+            "min": 0.0,
+            "max": 0.0
+        }
+    ],
+    "disk": {
+        "total": 48.25440216064453,
+        "used": 40.6618766784668
+    },
+    "memory": {
+        "total": 10.689983367919922
+    }
+}

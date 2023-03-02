@@ -1,0 +1,176 @@
+wandb_version: 1
+
+_wandb:
+  desc: null
+  value:
+    cli_version: 0.13.10
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    python_version: 3.9.16
+    start_time: 1677702809.613076
+    t:
+      1:
+      - 1
+      - 2
+      - 3
+      - 5
+      - 35
+      - 49
+      - 53
+      - 55
+      2:
+      - 1
+      - 2
+      - 3
+      - 5
+      - 35
+      - 49
+      - 53
+      - 55
+      3:
+      - 13
+      - 15
+      - 16
+      - 23
+      - 35
+      4: 3.9.16
+      5: 0.13.10
+      8:
+      - 5
+algo:
+  desc: null
+  value: td3
+conf_file:
+  desc: null
+  value: null
+device:
+  desc: null
+  value: auto
+env:
+  desc: null
+  value: Swimmer-v3
+env_kwargs:
+  desc: null
+  value: null
+eval_episodes:
+  desc: null
+  value: 5
+eval_freq:
+  desc: null
+  value: 25000
+gym_packages:
+  desc: null
+  value: []
+hyperparams:
+  desc: null
+  value: null
+log_folder:
+  desc: null
+  value: logs
+log_interval:
+  desc: null
+  value: -1
+max_total_trials:
+  desc: null
+  value: null
+n_eval_envs:
+  desc: null
+  value: 1
+n_evaluations:
+  desc: null
+  value: null
+n_jobs:
+  desc: null
+  value: 1
+n_startup_trials:
+  desc: null
+  value: 10
+n_timesteps:
+  desc: null
+  value: -1
+n_trials:
+  desc: null
+  value: 500
+no_optim_plots:
+  desc: null
+  value: false
+num_threads:
+  desc: null
+  value: -1
+optimization_log_path:
+  desc: null
+  value: null
+optimize_hyperparameters:
+  desc: null
+  value: false
+progress:
+  desc: null
+  value: false
+pruner:
+  desc: null
+  value: median
+sampler:
+  desc: null
+  value: tpe
+save_freq:
+  desc: null
+  value: -1
+save_replay_buffer:
+  desc: null
+  value: false
+saved_hyperparams:
+  desc: null
+  value:
+    gamma: 0.9999
+    gradient_steps: 1
+    learning_starts: 10000
+    n_timesteps: 1000000.0
+    noise_std: 0.1
+    noise_type: normal
+    normalize: false
+    policy: MlpPolicy
+    train_freq: 1
+seed:
+  desc: null
+  value: 3643959395
+storage:
+  desc: null
+  value: null
+study_name:
+  desc: null
+  value: null
+tensorboard_log:
+  desc: null
+  value: ''
+track:
+  desc: null
+  value: true
+trained_agent:
+  desc: null
+  value: ''
+truncate_last_trajectory:
+  desc: null
+  value: true
+uuid:
+  desc: null
+  value: false
+vec_env:
+  desc: null
+  value: dummy
+verbose:
+  desc: null
+  value: 1
+wandb_entity:
+  desc: null
+  value: null
+wandb_project_name:
+  desc: null
+  value: sb3
+wandb_tags:
+  desc: null
+  value:
+  - Soufiane
+yaml_file:
+  desc: null
+  value: null
