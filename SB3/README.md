@@ -133,7 +133,7 @@ Using the command mentioned earlier, we were able to track the reward data throu
 
 #### reward curve
 
-
+![reward curve](https://github.com/PaulTiberiu/SSNB/blob/main/SB3/reward_curve.png)
 
 
 
