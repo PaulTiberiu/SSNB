@@ -58,7 +58,7 @@ Now that all the needed libraries are installed, you can train an agent.
 
 ## Training
 
-To train a TD3 agent on the Swimmer_v3 environnement, follow these simple steps:
+To train a TD3 agent on the Swimmer_v3 environnement, use the following steps:
 
 ```bash
 rl_zoo3 train --algo td3 --env Swimmer-v3 -f logs/
@@ -90,20 +90,20 @@ Then, the experiment tracking will be available on your `wandb` home page
 
 Commands to record an agent, trained or untrained, for a specific number of steps
 
-### trained agent
+### Trained agent
 
 Record the latest saved model for 1000 steps
 ```bash
 python -m rl_zoo3.record_video --algo td3 --env Swimmer-v3 -n 1000
 ``` 
 
-### training agent
+### Training the agent
 
 Record 1000 steps for each checkpoint, latest and best saved models
 ```bash
 python -m rl_zoo3.record_training --algo td3 --env Swimmer-v3 -n 1000 -f logs --deterministic
 ```
-These commands generate an `mp4` file, to convert to `gif`, and it at the end of the command.
+This command generates a `mp4` file. To convert it into a `gif` file, add `it` at the end of the command.
 
 ## Our results
 
@@ -127,9 +127,9 @@ OrderedDict([('gamma', 0.9999),
              ('normalize', False)])
 ```
 
-### Learing curves
+### Learning curves
 
-Using the command mentioned earlier, we were able to track the reward data throughout the training of our agent
+Using the command mentioned earlier, we were able to track the reward data throughout the training of our agent.
 
 #### Reward curve
 
