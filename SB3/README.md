@@ -137,7 +137,7 @@ Using the command mentioned earlier, we were able to track the reward data throu
 
 #### Run summary
 
-![Run summary](https://github.com/PaulTiberiu/SSNB/blob/main/SB3/Run_summary.png)
+![Run summary](https://github.com/PaulTiberiu/SSNB/blob/main/SB3/run_summary.png)
 
 
 
