@@ -23,7 +23,7 @@ To run this part of the project, you will need to install the libraries mentione
 
 #### Minimal installation
 
-```bash
+```
 git clone https://github.com/DLR-RM/rl-baselines3-Zoo
 cd rl-baselines3-Zoo
 sudo pip install -e .
@@ -31,7 +31,7 @@ sudo pip install -e .
 
 #### Full installation (with extra envs and test dependencies)
 
-```bash
+```
 sudo apt-get install swig cmake ffmpeg
 sudo pip install -r requirements.txt
 ```
@@ -40,7 +40,7 @@ sudo pip install -r requirements.txt
 
 To install SB3 with pip, execute:
 
-```bash
+```
 sudo pip install stable-baselines3[extra]
 ```
 
@@ -48,7 +48,7 @@ sudo pip install stable-baselines3[extra]
 
 To install SB3 Contrib with pip, execute:
 
-```bash
+```
 sudo pip install sb3-contrib
 ```
 Now that all the needed libraries are installed, you can train an agent.
@@ -60,13 +60,13 @@ Now that all the needed libraries are installed, you can train an agent.
 
 To train a TD3 agent on the Swimmer_v3 environnement, use the following steps:
 
-```bash
+```
 rl_zoo3 train --algo td3 --env Swimmer-v3 -f logs/
 ```
 
 Now that you have a trained agent, if you want to enjoy it, simply run:
 
-```bash
+```
 # exp-id 0 corresponds to the last experiment, otherwise, you can specify another ID
 rl_zoo3 enjoy --algo algo_name --env env_id -f logs/ --exp-id 0
 ```
@@ -75,7 +75,7 @@ rl_zoo3 enjoy --algo algo_name --env env_id -f logs/ --exp-id 0
 RL Zoo offers the possibility to visualize experiment data such as learning curves via [Weights and Biases](https://wandb.ai/)
 
 The following command:
-```bash
+```
 rl_zoo3 train --algo td3 --env Swimmer-v3 --track --wandb-project-name sb3
 ```
 yields a tracked experiment at this [URL](https://wandb.ai/openrlbenchmark/sb3/runs/1b65ldmh).
@@ -93,14 +93,14 @@ Commands to record an agent, trained or untrained, for a specific number of step
 ### Trained agent
 
 Record the latest saved model for 1000 steps
-```bash
+```
 python -m rl_zoo3.record_video --algo td3 --env Swimmer-v3 -n 1000
 ``` 
 
 ### Training the agent
 
 Record 1000 steps for each checkpoint, latest and best saved models
-```bash
+```
 python -m rl_zoo3.record_training --algo td3 --env Swimmer-v3 -n 1000 -f logs --deterministic
 ```
 This command generates a `mp4` file. To convert it into a `gif` file, add `it` at the end of the command.
