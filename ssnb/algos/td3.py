@@ -12,15 +12,14 @@ from bbrl.utils.chrono import Chrono
 from bbrl import get_arguments, get_class
 from bbrl.workspace import Workspace
 from bbrl.agents import Agents, TemporalAgent
-from bbrl_examples.models.loggers import Logger, RewardLogger
-from bbrl.utils.replay_buffer import ReplayBuffer
-from bbrl_examples.models.actors import ContinuousDeterministicActor
-from bbrl_examples.models.critics import ContinuousQAgent
-from bbrl_examples.models.shared_models import soft_update_params
 from bbrl.agents.gymb import AutoResetGymAgent, NoAutoResetGymAgent
-from bbrl_examples.models.exploration_agents import AddGaussianNoise
-from bbrl.visu.visu_policies import plot_policy
-from bbrl.visu.visu_critics import plot_critic
+from bbrl.utils.replay_buffer import ReplayBuffer
+from bbrl.workspace import Workspace
+from ssnb.models.actors import ContinuousDeterministicActor
+from ssnb.models.critics import ContinuousQAgent
+from ssnb.models.exploration_agents import AddGaussianNoise
+from ssnb.models.loggers import Logger, RewardLogger
+from ssnb.models.shared_models import soft_update_params
 # HYDRA_FULL_ERROR = 1
 import matplotlib
 matplotlib.use("TkAgg")
@@ -223,7 +222,7 @@ def run_td3(cfg, reward_logger):
         if nb_steps - tmp_steps > cfg.algorithm.eval_interval:
             tmp_steps = nb_steps
             eval_workspace = Workspace()  # Used for evaluation
-            eval_agent(eval_workspace, t=0, stop_variable="env/done")
+            eval_agent(eval_workspace, t=0, stop_variable="env/done", render=cfg.render_agents) #????????
             rewards = eval_workspace["env/cumulated_reward"]
             q_agent_1(eval_workspace, t=0, stop_variable="env/done")
             q_values = eval_workspace["q_value"].squeeze()
