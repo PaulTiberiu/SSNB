@@ -5,8 +5,8 @@ import numpy as np
 import torch
 import torch.nn as nn
 import gym
+import my_gym
 import hydra
-import optuna
 from omegaconf import DictConfig
 from bbrl.utils.chrono import Chrono
 from bbrl import get_arguments, get_class
@@ -86,7 +86,6 @@ def compute_actor_loss(q_values):
     actor_loss = -q_values
     return actor_loss.mean()
 def run_td3(cfg, reward_logger):
-    avg_reward = 0 #average reward for optuna
     # 1)  Build the  logger
     logger = Logger(cfg)
     best_reward = -10e9
@@ -220,8 +219,6 @@ def run_td3(cfg, reward_logger):
                 soft_update_params(critic_1, target_critic_1, tau)
                 soft_update_params(critic_2, target_critic_2, tau)
                 # soft_update_params(actor, target_actor, tau)
-        if nb_steps%10000 == 0:
-            avg_reward += (rewards[-1].mean())
         if nb_steps - tmp_steps > cfg.algorithm.eval_interval:
             tmp_steps = nb_steps
             eval_workspace = Workspace()  # Used for evaluation
@@ -251,21 +248,7 @@ def run_td3(cfg, reward_logger):
                 eval_agent.save_model(filename)
     delta_list_mean = np.array(delta_list).mean(axis=1)
     delta_list_std = np.array(delta_list).std(axis=1)
-    avg_reward = avg_reward/(nb_steps/10000)
-    return delta_list_mean, delta_list_std, avg_reward
-
-def define_model(trial):
-
-
-def objective(trial):
-    #Generate the model
-    model = define_model(trial).to(DEVICE)
-
-    #Generate the optimizers
-    optimizer_name = trial.suggest_categorical("optimizer", )
-    
-    _, _, score = run_td3(cfg, reward_logger)
-    return score
+    return delta_list_mean, delta_list_std
 
 @hydra.main(
     config_path="./configs/td3/",
@@ -281,8 +264,6 @@ def main(cfg: DictConfig):
     reward_logger = RewardLogger(logdir + "td3.steps", logdir + "td3.rwd")
     torch.manual_seed(cfg.algorithm.seed)
     run_td3(cfg, reward_logger)
-    #study = optuna.create_study()
-    #study.optimize(objective, n_trials=100)
     chrono.stop()
     # main_loop(cfg)
 if __name__ == "__main__":

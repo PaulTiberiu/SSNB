@@ -10,4 +10,3 @@ setuptools~=60.2.0
 tensorboard
 torch
 tqdm
-optuna
