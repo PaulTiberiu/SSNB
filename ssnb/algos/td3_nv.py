@@ -2,44 +2,35 @@ import sys
 import os
 import copy
 import numpy as np
-import optuna
 import torch
 import torch.nn as nn
 import gym
-import my_gym
 import hydra
-from typing import Any, Dict
-from omegaconf import DictConfig, OmegaConf
-from bbrl.utils.chrono import Chrono
+import optuna
+from omegaconf import DictConfig
 
+from bbrl.utils.chrono import Chrono
 from bbrl import get_arguments, get_class
 from bbrl.workspace import Workspace
 from bbrl.agents import Agents, TemporalAgent
-
-from bbrl_examples.models.loggers import Logger, RewardLogger
-from bbrl.utils.replay_buffer import ReplayBuffer
-
-from bbrl_examples.models.actors import ContinuousDeterministicActor
-from bbrl_examples.models.critics import ContinuousQAgent
-from bbrl_examples.models.shared_models import soft_update_params
 from bbrl.agents.gymb import AutoResetGymAgent, NoAutoResetGymAgent
-from bbrl_examples.models.exploration_agents import AddGaussianNoise
+from bbrl.utils.replay_buffer import ReplayBuffer
+from bbrl.workspace import Workspace
 
-from bbrl.visu.visu_policies import plot_policy
-from bbrl.visu.visu_critics import plot_critic
+from ssnb.models.actors import ContinuousDeterministicActor
+from ssnb.models.critics import ContinuousQAgent
+from ssnb.models.exploration_agents import AddGaussianNoise
+from ssnb.models.loggers import Logger, RewardLogger
+from ssnb.models.shared_models import soft_update_params
 
+# HYDRA_FULL_ERROR = 1
 from optuna.samplers import TPESampler
 from optuna.pruners import MedianPruner
 from optuna.visualization import plot_optimization_history, plot_param_importances
 
-# HYDRA_FULL_ERROR = 1
-
 import matplotlib
-
 matplotlib.use("TkAgg")
-
-assets_path = os.getcwd() + "/assets/"
-
+assets_path = os.getcwd() + "/../assets/"
 
 # Create the TD3 Agent
 def create_td3_agent(cfg, train_env_agent, eval_env_agent):
@@ -51,7 +42,6 @@ def create_td3_agent(cfg, train_env_agent, eval_env_agent):
     noise_agent = AddGaussianNoise(cfg.algorithm.action_noise)
     tr_agent = Agents(train_env_agent, actor, noise_agent)
     ev_agent = Agents(eval_env_agent, actor)
-
     critic_1 = ContinuousQAgent(
         obs_size, cfg.algorithm.architecture.critic_hidden_size, act_size
     )
@@ -60,7 +50,6 @@ def create_td3_agent(cfg, train_env_agent, eval_env_agent):
         obs_size, cfg.algorithm.architecture.critic_hidden_size, act_size
     )
     target_critic_2 = copy.deepcopy(critic_2)
-
     train_agent = TemporalAgent(tr_agent)
     eval_agent = TemporalAgent(ev_agent)
     train_agent.seed(cfg.algorithm.seed)
@@ -78,7 +67,6 @@ def create_td3_agent(cfg, train_env_agent, eval_env_agent):
 def make_gym_env(env_name, xml_file):
     xml_file = assets_path + xml_file
     return gym.make(env_name, xml_file=xml_file)
-
 
 # Configure the optimizer
 def setup_optimizers(cfg, actor, critic_1, critic_2):
@@ -112,12 +100,11 @@ def compute_actor_loss(q_values):
     return actor_loss.mean()
 
 
-def run_td3(cfg, reward_logger, trial):
+def run_td3(cfg, reward_logger):
     # 1)  Build the  logger
     logger = Logger(cfg)
     best_reward = -10e9
     delta_list = []
-
     # 2) Create the environment agents
     train_env_agent = AutoResetGymAgent(
         get_class(cfg.gym_env),
@@ -131,7 +118,6 @@ def run_td3(cfg, reward_logger, trial):
         cfg.algorithm.nb_evals,
         cfg.algorithm.seed,
     )
-
     # 3) Create the TD3 Agent
     (
         train_agent,
@@ -150,21 +136,17 @@ def run_td3(cfg, reward_logger, trial):
     target_q_agent_2 = TemporalAgent(target_critic_2)
     train_workspace = Workspace()
     rb = ReplayBuffer(max_size=cfg.algorithm.buffer_size)
-
     # Configure the optimizer
     actor_optimizer, critic_optimizer = setup_optimizers(cfg, actor, critic_1, critic_2)
     nb_steps = 0
     tmp_steps = 0
     is_pruned = False
-
     # Training loop
     for epoch in range(cfg.algorithm.max_epochs):
         # Execute the agent in the workspace
         if epoch > 0:
             train_workspace.zero_grad()
             train_workspace.copy_n_last_steps(1)
-
-            # below, was n_steps=cfg.algorithm.n_steps - 1
             train_agent(train_workspace, t=1, n_steps=cfg.algorithm.n_steps)
         else:
             train_agent(train_workspace, t=0, n_steps=cfg.algorithm.n_steps)
@@ -175,13 +157,11 @@ def run_td3(cfg, reward_logger, trial):
         if epoch > 0 or cfg.algorithm.n_steps > 1:
             rb.put(transition_workspace)
             # rb.print_obs()
-
+            
         for _ in range(cfg.algorithm.n_updates):
-
             # print(f"done {done}, reward {reward}, action {action}")
             if nb_steps > cfg.algorithm.learning_starts:
                 rb_workspace = rb.get_shuffled(cfg.algorithm.batch_size)
-
                 done, truncated, reward = rb_workspace[
                     "env/done", "env/truncated", "env/reward"
                 ]
@@ -189,14 +169,12 @@ def run_td3(cfg, reward_logger, trial):
                 # True if the episode reached a time limit or if the task was not done
                 # See https://colab.research.google.com/drive/1W9Y-3fa6LsPeR6cBC1vgwBjKfgMwZvP5?usp=sharing
                 must_bootstrap = torch.logical_or(~done[1], truncated[1])
-
                 # Critic update
                 # compute q_values: at t, we have Q(s,a) from the (s,a) in the RB
                 q_agent_1(rb_workspace, t=0, n_steps=1)
                 q_values_rb_1 = rb_workspace["q_value"]
                 q_agent_2(rb_workspace, t=0, n_steps=1)
                 q_values_rb_2 = rb_workspace["q_value"]
-
                 with torch.no_grad():
                     # replace the action at t+1 in the RB with \pi(s_{t+1}), to compute Q(s_{t+1}, \pi(s_{t+1}) below
                     ag_actor(rb_workspace, t=1, n_steps=1)
@@ -205,7 +183,6 @@ def run_td3(cfg, reward_logger, trial):
                     post_q_values_1 = rb_workspace["q_value"]
                     target_q_agent_2(rb_workspace, t=1, n_steps=1)
                     post_q_values_2 = rb_workspace["q_value"]
-
                 post_q_values = torch.min(post_q_values_1, post_q_values_2).squeeze(-1)
                 # Compute critic loss
                 critic_loss_1, critic_loss_2 = compute_critic_loss(
@@ -219,7 +196,26 @@ def run_td3(cfg, reward_logger, trial):
                 logger.add_log("critic_loss_1", critic_loss_1, nb_steps)
                 logger.add_log("critic_loss_2", critic_loss_2, nb_steps)
                 critic_loss = critic_loss_1 + critic_loss_2
-
+                # Actor update
+                # Now we determine the actions the current policy would take in the states from the RB
+                ag_actor(rb_workspace, t=0, n_steps=1)
+                # We determine the Q values resulting from actions of the current policy
+                # We arbitrarily chose to update the actor with respect to critic_1
+                # and we back-propagate the corresponding loss to maximize the Q values
+                q_agent_1(rb_workspace, t=0, n_steps=1)
+                q_values_1 = rb_workspace["q_value"]
+                q_agent_2(rb_workspace, t=0, n_steps=1)
+                q_values_2 = rb_workspace["q_value"]
+                current_q_values = torch.min(q_values_1, q_values_2).squeeze(-1)
+                actor_loss = compute_actor_loss(current_q_values)
+                logger.add_log("actor_loss", actor_loss, nb_steps)
+                # Actor update part ###################################################################
+                actor_optimizer.zero_grad()
+                actor_loss.backward()
+                torch.nn.utils.clip_grad_norm_(
+                    actor.parameters(), cfg.algorithm.max_grad_norm
+                )
+                actor_optimizer.step()
                 # Critic update part ############################################################
                 critic_optimizer.zero_grad()
                 critic_loss.backward()
@@ -230,50 +226,24 @@ def run_td3(cfg, reward_logger, trial):
                     critic_2.parameters(), cfg.algorithm.max_grad_norm
                 )
                 critic_optimizer.step()
-
-                # Actor update
-                # Now we determine the actions the current policy would take in the states from the RB
-                ag_actor(rb_workspace, t=0, n_steps=1)
-                # We determine the Q values resulting from actions of the current policy
-                # We arbitrarily chose to update the actor with respect to critic_1
-                # and we back-propagate the corresponding loss to maximize the Q values
-                q_agent_1(rb_workspace, t=0, n_steps=1)
-                q_values_1 = rb_workspace["q_value"]
-                # q_agent_2(rb_workspace, t=0, n_steps=1)
-                # q_values_2 = rb_workspace["q_value"]
-                current_q_values = q_values_1.squeeze(-1)
-                # current_q_values = torch.min(q_values_1, q_values_2).squeeze(-1)
-                actor_loss = compute_actor_loss(current_q_values)
-                logger.add_log("actor_loss", actor_loss, nb_steps)
-
-                # Actor update part ###################################################################
-                actor_optimizer.zero_grad()
-                actor_loss.backward()
-                torch.nn.utils.clip_grad_norm_(
-                    actor.parameters(), cfg.algorithm.max_grad_norm
-                )
-                actor_optimizer.step()
-
                 # Soft update of target q function
                 tau = cfg.algorithm.tau_target
                 soft_update_params(critic_1, target_critic_1, tau)
                 soft_update_params(critic_2, target_critic_2, tau)
                 # soft_update_params(actor, target_actor, tau)
-
+        
         if nb_steps - tmp_steps > cfg.algorithm.eval_interval:
             tmp_steps = nb_steps
             eval_workspace = Workspace()  # Used for evaluation
-            eval_agent(eval_workspace, t=0, stop_variable="env/done")
-
+            eval_agent(eval_workspace, t=0, stop_variable="env/done", render=cfg.render_agents) 
             rewards = eval_workspace["env/cumulated_reward"]
             q_agent_1(eval_workspace, t=0, stop_variable="env/done")
             q_values = eval_workspace["q_value"].squeeze()
             delta = q_values - rewards
             maxi_delta = delta.max(axis=0)[0].detach().numpy()
             delta_list.append(maxi_delta)
-
             mean = rewards[-1].mean()
-            logger.log_reward_losses(rewards, nb_steps)
+            logger.add_log("reward", mean, nb_steps)
             print(f"nb_steps: {nb_steps}, reward: {mean}")
             reward_logger.add(nb_steps, mean)
             if cfg.save_best and mean > best_reward:
@@ -289,30 +259,27 @@ def run_td3(cfg, reward_logger, trial):
                     + ".agt"
                 )
                 eval_agent.save_model(filename)
-                if cfg.plot_agents:
-                    plot_policy(
-                        actor,
-                        eval_env_agent,
-                        "./td3_plots/",
-                        cfg.gym_env.env_name,
-                        best_reward,
-                        stochastic=False,
-                    )
-                    plot_critic(
-                        q_agent_1.agent,  
-                        eval_env_agent,
-                        "./td3_plots/",
-                        cfg.gym_env.env_name,
-                        nb_steps,
-                    )
+
             trial.report(mean, epoch)
             if trial.should_prune():
                 is_pruned = True
-                return _, _, mean, is_pruned
+                return _, _, mean, is_pruned            
+           
+                
     delta_list_mean = np.array(delta_list).mean(axis=1)
     delta_list_std = np.array(delta_list).std(axis=1)
     return delta_list_mean, delta_list_std, mean, is_pruned
-    
+
+"""
+@hydra.main(
+    config_path="./configs/td3/",
+    config_name="td3_swimmer3.yaml",
+    # config_name="td3_cartpolecontinuous.yaml",
+    # config_name="td3_lunar_lander_continuous.yaml",
+    # config_name="td3_pendulum.yaml",
+)
+"""
+
 cfg = OmegaConf.load("./configs/td3_swimmer_values.yaml")
 
 def sample_td3_params(trial):
@@ -420,23 +387,6 @@ def tune(objective):
 
 	fig1.show()
 	fig2.show()
-
-def main_loop(cfg):
-    chrono = Chrono()
-    logdir = "./plot/"
-    if not os.path.exists(logdir):
-        os.makedirs(logdir)
-    reward_logger = RewardLogger(logdir + "td3.steps", logdir + "td3.rwd")
-    for seed in range(cfg.algorithm.nb_seeds):
-        cfg.algorithm.seed = seed
-        torch.manual_seed(cfg.algorithm.seed)
-        run_td3(cfg, reward_logger)
-        if seed < cfg.algorithm.nb_seeds - 1:
-            reward_logger.new_episode()
-    reward_logger.save()
-    chrono.stop()
-    # plotter = Plotter(logdir + "td3.steps", logdir + "td3.rwd")
-    # plotter.plot_reward("td3", cfg.gym_env.env_name)
 
 def main(cfg: DictConfig):
     # print(OmegaConf.to_yaml(cfg))
