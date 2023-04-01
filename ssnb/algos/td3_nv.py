@@ -7,7 +7,7 @@ import torch.nn as nn
 import gym
 import hydra
 import optuna
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 
 from bbrl.utils.chrono import Chrono
 from bbrl import get_arguments, get_class
@@ -100,7 +100,7 @@ def compute_actor_loss(q_values):
     return actor_loss.mean()
 
 
-def run_td3(cfg, reward_logger):
+def run_td3(cfg, reward_logger, trial):
     # 1)  Build the  logger
     logger = Logger(cfg)
     best_reward = -10e9
@@ -273,14 +273,14 @@ def run_td3(cfg, reward_logger):
 """
 @hydra.main(
     config_path="./configs/td3/",
-    config_name="td3_swimmer3.yaml",
+    config_name="td3_swimmer3_swimmer_values.yaml",
     # config_name="td3_cartpolecontinuous.yaml",
     # config_name="td3_lunar_lander_continuous.yaml",
     # config_name="td3_pendulum.yaml",
 )
 """
 
-cfg = OmegaConf.load("./configs/td3_swimmer_values.yaml")
+cfg = OmegaConf.load("./configs/td3/td3_swimmer_values.yaml/")
 
 def sample_td3_params(trial):
     """Sampler for TD3 hyperparameters."""
@@ -327,7 +327,7 @@ def td3_objective(trial):
     mean = 0
     is_pruned = False
     
-    cfg = sample_td3_params(trial)
+    config = sample_td3_params(trial)
  
     nan_encountered = False
     
@@ -335,8 +335,8 @@ def td3_objective(trial):
         # Train the model
         logdir = "./plot/"
         reward_logger = RewardLogger(logdir + "td3.steps", logdir + "td3.rwd")
-        torch.manual_seed(cfg.algorithm.seed)
-        _, _, mean, is_pruned = run_td3(cfg, reward_logger, trial)
+        torch.manual_seed(config.algorithm.seed)
+        _, _, mean, is_pruned = run_td3(config, reward_logger, trial)
     except AssertionError as e:
         # Sometimes, random hyperparams can generate NaN
         print(e)
