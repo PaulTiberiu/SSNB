@@ -280,7 +280,7 @@ def run_td3(cfg, reward_logger, trial):
 )
 """
 
-cfg = OmegaConf.load("./configs/td3/td3_swimmer_values.yaml/")
+cfg = OmegaConf.load("./configs/td3/td3_swimmer_optuna.yaml/")
 
 def sample_td3_params(trial):
     """Sampler for TD3 hyperparameters."""
@@ -326,9 +326,7 @@ def sample_td3_params(trial):
 def td3_objective(trial):
     mean = 0
     is_pruned = False
-    
     config = sample_td3_params(trial)
- 
     nan_encountered = False
     
     try:
@@ -337,6 +335,7 @@ def td3_objective(trial):
         reward_logger = RewardLogger(logdir + "td3.steps", logdir + "td3.rwd")
         torch.manual_seed(config.algorithm.seed)
         _, _, mean, is_pruned = run_td3(config, reward_logger, trial)
+
     except AssertionError as e:
         # Sometimes, random hyperparams can generate NaN
         print(e)
@@ -392,7 +391,6 @@ def main(cfg: DictConfig):
     # print(OmegaConf.to_yaml(cfg))
     tune(td3_objective)
     # main_loop(cfg)
-
 
 if __name__ == "__main__":
     sys.path.append(os.getcwd())

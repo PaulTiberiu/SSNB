@@ -1,4 +1,4 @@
-    render_agents: False
+    render_agents: True
     save_best: True
 
     logger:

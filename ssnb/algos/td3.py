@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import gym
 import hydra
-import optuna
+
 from omegaconf import DictConfig
 from bbrl.utils.chrono import Chrono
 from bbrl import get_arguments, get_class
@@ -20,6 +20,7 @@ from ssnb.models.critics import ContinuousQAgent
 from ssnb.models.exploration_agents import AddGaussianNoise
 from ssnb.models.loggers import Logger, RewardLogger
 from ssnb.models.shared_models import soft_update_params
+
 # HYDRA_FULL_ERROR = 1
 import matplotlib
 matplotlib.use("TkAgg")
@@ -220,8 +221,7 @@ def run_td3(cfg, reward_logger):
                 soft_update_params(critic_1, target_critic_1, tau)
                 soft_update_params(critic_2, target_critic_2, tau)
                 # soft_update_params(actor, target_actor, tau)
-        if nb_steps%10000 == 0:
-            avg_reward += (rewards[-1].mean())
+
         if nb_steps - tmp_steps > cfg.algorithm.eval_interval:
             tmp_steps = nb_steps
             eval_workspace = Workspace()  # Used for evaluation
@@ -249,23 +249,11 @@ def run_td3(cfg, reward_logger):
                     + ".agt"
                 )
                 eval_agent.save_model(filename)
+
     delta_list_mean = np.array(delta_list).mean(axis=1)
     delta_list_std = np.array(delta_list).std(axis=1)
-    avg_reward = avg_reward/(nb_steps/10000)
-    return delta_list_mean, delta_list_std, avg_reward
+    return delta_list_mean, delta_list_std
 
-def define_model(trial):
-
-
-def objective(trial):
-    #Generate the model
-    model = define_model(trial).to(DEVICE)
-
-    #Generate the optimizers
-    optimizer_name = trial.suggest_categorical("optimizer", )
-    
-    _, _, score = run_td3(cfg, reward_logger)
-    return score
 
 @hydra.main(
     config_path="./configs/td3/",
@@ -274,6 +262,8 @@ def objective(trial):
     # config_name="td3_lunar_lander_continuous.yaml",
     # config_name="td3_pendulum.yaml",
 )
+
+
 def main(cfg: DictConfig):
     # print(OmegaConf.to_yaml(cfg))
     chrono = Chrono()
