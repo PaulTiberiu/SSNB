@@ -87,7 +87,6 @@ def compute_actor_loss(q_values):
     actor_loss = -q_values
     return actor_loss.mean()
 def run_td3(cfg, reward_logger):
-    avg_reward = 0 #average reward for optuna
     # 1)  Build the  logger
     logger = Logger(cfg)
     best_reward = -10e9
