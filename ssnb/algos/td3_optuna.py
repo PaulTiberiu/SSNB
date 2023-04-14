@@ -140,7 +140,6 @@ def run_td3(cfg, reward_logger, trial):
     actor_optimizer, critic_optimizer = setup_optimizers(cfg, actor, critic_1, critic_2)
     nb_steps = 0
     tmp_steps = 0
-    is_pruned = False
     # Training loop
     for epoch in range(cfg.algorithm.max_epochs):
         # Execute the agent in the workspace
@@ -262,13 +261,12 @@ def run_td3(cfg, reward_logger, trial):
 
             trial.report(mean, epoch)
             if trial.should_prune():
-                is_pruned = True
-                return _, _, mean, is_pruned            
+                return _, _, mean, True            
            
                 
     delta_list_mean = np.array(delta_list).mean(axis=1)
     delta_list_std = np.array(delta_list).std(axis=1)
-    return delta_list_mean, delta_list_std, mean, is_pruned
+    return delta_list_mean, delta_list_std, mean, False
 
 """
 @hydra.main(
