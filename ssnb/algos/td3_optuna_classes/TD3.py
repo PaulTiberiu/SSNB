@@ -248,6 +248,10 @@ class TD3:
             print('\nProgram interrupted by user before terminating')
 
 
+    @classmethod
+    def create_agent(cls, cfg):
+        return cls(cfg)
+
 def make_gym_env(env_name, xml_file):
     xml_file = assets_path + xml_file
     return gym.make(env_name, xml_file=xml_file)
