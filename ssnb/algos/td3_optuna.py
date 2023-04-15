@@ -30,7 +30,7 @@ from optuna.pruners import MedianPruner
 
 #import matplotlib
 #matplotlib.use("TkAgg")
-#assets_path = os.getcwd() + "/../assets/"
+assets_path = os.getcwd() + "/../assets/"
 
 # Create the TD3 Agent
 def create_td3_agent(cfg, train_env_agent, eval_env_agent):
