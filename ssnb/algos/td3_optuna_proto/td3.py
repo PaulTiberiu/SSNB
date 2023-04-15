@@ -132,8 +132,11 @@ class TD3_agent:
         self.is_eval = bool
         self.last_mean_reward = float
 
-def run_td3(cfg, reward_logger, agent):
-    # 1)  Build the  logger
+def run_td3(cfg, agent):
+    # 1)  Build the logger
+    logdir = "./plot/"
+    reward_logger = RewardLogger(logdir + algo + ".steps", logdir + algo + ".rwd")
+    # 2)  Build agent if needed
     if not agent :
         agent = TD3_agent(cfg)
     agent.is_eval = False
