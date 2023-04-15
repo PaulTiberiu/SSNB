@@ -124,7 +124,6 @@ class TD3:
                     train_workspace.zero_grad()
                     train_workspace.copy_n_last_steps(1)
                     self.agent['train_agent'](train_workspace, t=1, n_steps=self.cfg.algorithm.n_steps)  # check if it should be n_steps=cfg.algorithm.n_steps - 1
-                    self.agent['train_agent'](train_workspace, t=1, n_steps=self.cfg.algorithm.n_steps)
 
                 else:
                     self.agent['train_agent'](train_workspace, t=0, n_steps=self.cfg.algorithm.n_steps)
@@ -177,6 +176,13 @@ class TD3:
                         logger.add_log("critic_loss_2", critic_loss_2, nb_steps)
                         critic_loss = critic_loss_1 + critic_loss_2
 
+                        # Critic update part
+                        critic_optimizer.zero_grad()
+                        critic_loss.backward()
+                        torch.nn.utils.clip_grad_norm_(self.agent['critic_1'].parameters(), self.cfg.algorithm.max_grad_norm)
+                        torch.nn.utils.clip_grad_norm_(self.agent['critic_2'].parameters(), self.cfg.algorithm.max_grad_norm)
+                        critic_optimizer.step()
+
                         # Actor update
                         # Now we determine the actions the current policy would take in the states from the RB
                         ag_actor(rb_workspace, t=0, n_steps=1)
@@ -186,8 +192,8 @@ class TD3:
                         # and we back-propagate the corresponding loss to maximize the Q values
                         self.agent['q_agent_1'](rb_workspace, t=0, n_steps=1)
                         q_values_1 = rb_workspace["q_value"]
-                        self.agent['q_agent_2'](rb_workspace, t=0, n_steps=1)
-                        q_values_2 = rb_workspace["q_value"]
+                        # self.agent['q_agent_2'](rb_workspace, t=0, n_steps=1)
+                        # q_values_2 = rb_workspace["q_value"]
                         current_q_values = torch.min(q_values_1, q_values_2).squeeze(-1)
                         actor_loss = self.compute_actor_loss(current_q_values)
                         logger.add_log("actor_loss", actor_loss, nb_steps)
@@ -197,13 +203,6 @@ class TD3:
                         actor_loss.backward()
                         torch.nn.utils.clip_grad_norm_(self.agent['actor'].parameters(), self.cfg.algorithm.max_grad_norm)
                         actor_optimizer.step()
-
-                        # Critic update part
-                        critic_optimizer.zero_grad()
-                        critic_loss.backward()
-                        torch.nn.utils.clip_grad_norm_(self.agent['critic_1'].parameters(), self.cfg.algorithm.max_grad_norm)
-                        torch.nn.utils.clip_grad_norm_(self.agent['critic_2'].parameters(), self.cfg.algorithm.max_grad_norm)
-                        critic_optimizer.step()
 
                         # Soft update of target q function
                         tau = self.cfg.algorithm.tau_target
