@@ -6,6 +6,7 @@ from omegaconf import OmegaConf
 
 from ssnb.models.loggers import RewardLogger
 from ssnb.algos.td3 import run_td3
+from ssnb.algos.ddpg import run_ddpg
 
 from optuna.samplers import TPESampler
 from optuna.pruners import MedianPruner
@@ -65,7 +66,7 @@ def objective(trial, cfg, run_algo):
         config.algorithm.max_epoch = 1
         
         for epoch in range(config.algorithm.max_epoch):
-            run_algo(config, agent)
+            eval(run_algo + "(config, agent)")
 
             if agent.is_eval:
                 trial.report(agent.mean, epoch)
@@ -87,11 +88,9 @@ def objective(trial, cfg, run_algo):
     return agent.last_mean_reward
 
 def tune(objective, cfg, run_algo):
-	# Création et lancement de l'étude
+	# Creation and start of the study
 	sampler = TPESampler(n_startup_trials=cfg.study.n_startup_trials)
-	
 	pruner = MedianPruner(n_startup_trials=cfg.study.n_startup_trials, n_warmup_steps=cfg.study.n_warmup_steps // 3)
-    
 	study = optuna.create_study(sampler=sampler, pruner=pruner, direction="maximize")
 	
 	try:
@@ -100,16 +99,14 @@ def tune(objective, cfg, run_algo):
 		pass
 	
 	print("Number of finished trials: ", len(study.trials))
-
+	
+	# Best trial
 	print("Best trial:")
 	trial = study.best_trial
-
 	print(f"  Value: {trial.value}")
-
 	print("  Params: ")
 	for key, value in trial.params.items():
 		print(f"    {key}: {value}")
-	
 	print("  User attrs:")
 	for key, value in trial.user_attrs.items():
 		print(f"    {key}: {value}")
@@ -123,10 +120,10 @@ def tune(objective, cfg, run_algo):
 	fig1.show()
 	fig2.show()
 
-def main():
-    cfg = OmegaConf.load("./configs/td3/td3_swimmer_optuna.yaml/")
-    tune(objective, cfg, run_td3) #exemple avec td3
+def main(argv):
+    cfg = OmegaConf.load("./configs/" + argv[0])
+    tune(objective, cfg, argv[1])
 
 if __name__ == "__main__":
     sys.path.append(os.getcwd())
-    main()
+    main(sys.argv[1:])
