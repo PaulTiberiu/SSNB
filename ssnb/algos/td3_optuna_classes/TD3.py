@@ -248,35 +248,6 @@ class TD3:
             print('\nProgram interrupted by user before terminating')
 
 
-    def objective(self, trial):
-        mean = 0
-        is_pruned = False
-        nan_encountered = False
-        nb_epoch_per_step = 1
-
-        try:
-            for epoch in range(self.cfg.algorithm.max_epochs):
-                mean = self.run(nb_epoch_per_step)
-                trial.report(mean, epoch)
-                if trial.should_prune():
-                    is_pruned = True
-                    break
-
-        except AssertionError as e:
-            # Sometimes, random hyperparams can generate NaN
-            print(e)
-            nan_encountered = True
-
-        # Tell the optimizer that the trial failed
-        if nan_encountered:
-            return float("nan")
-    
-        if is_pruned:
-            raise optuna.exceptions.TrialPruned()
-
-        return mean
-
-
 def make_gym_env(env_name, xml_file):
     xml_file = assets_path + xml_file
     return gym.make(env_name, xml_file=xml_file)
