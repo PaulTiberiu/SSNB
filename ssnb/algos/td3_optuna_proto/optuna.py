@@ -54,20 +54,18 @@ def sample_td3_params(trial, cfg):
     
     return params
 
-def objective(trial, cfg, run_algo, algo):
+def objective(trial, cfg, run_algo):
     config = sample_td3_params(trial, cfg)
     nan_encountered = False
     
     try:
         # Train the model
-        logdir = "./plot/"
-        reward_logger = RewardLogger(logdir + algo + ".steps", logdir + algo + ".rwd")
         agent = None
         max = config.algorithm.max_epoch
         config.algorithm.max_epoch = 1
         
         for epoch in range(config.algorithm.max_epoch):
-            run_algo(config, reward_logger, agent)
+            run_algo(config, agent)
 
             if agent.is_eval:
                 trial.report(agent.mean, epoch)
@@ -88,7 +86,7 @@ def objective(trial, cfg, run_algo, algo):
     
     return agent.last_mean_reward
 
-def tune(objective, cfg, run_algo, algo):
+def tune(objective, cfg, run_algo):
 	# Création et lancement de l'étude
 	sampler = TPESampler(n_startup_trials=cfg.study.n_startup_trials)
 	
@@ -97,7 +95,7 @@ def tune(objective, cfg, run_algo, algo):
 	study = optuna.create_study(sampler=sampler, pruner=pruner, direction="maximize")
 	
 	try:
-		study.optimize(lambda trial: objective(trial, cfg, run_algo, algo), n_trials=cfg.study.n_trials, n_jobs=cfg.study.n_jobs, timeout=cfg.study.timeout)
+		study.optimize(lambda trial: objective(trial, cfg, run_algo), n_trials=cfg.study.n_trials, n_jobs=cfg.study.n_jobs, timeout=cfg.study.timeout)
 	except KeyboardInterrupt:
 		pass
 	
@@ -127,7 +125,7 @@ def tune(objective, cfg, run_algo, algo):
 
 def main():
     cfg = OmegaConf.load("./configs/td3/td3_swimmer_optuna.yaml/")
-    tune(objective, cfg, run_td3, "td3") #exemple avec td3
+    tune(objective, cfg, run_td3) #exemple avec td3
 
 if __name__ == "__main__":
     sys.path.append(os.getcwd())
