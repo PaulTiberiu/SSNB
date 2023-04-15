@@ -26,11 +26,11 @@ from ssnb.models.shared_models import soft_update_params
 # HYDRA_FULL_ERROR = 1
 from optuna.samplers import TPESampler
 from optuna.pruners import MedianPruner
-from optuna.visualization import plot_optimization_history, plot_param_importances
+#from optuna.visualization import plot_optimization_history, plot_param_importances
 
-import matplotlib
-matplotlib.use("TkAgg")
-assets_path = os.getcwd() + "/../assets/"
+#import matplotlib
+#matplotlib.use("TkAgg")
+#assets_path = os.getcwd() + "/../assets/"
 
 # Create the TD3 Agent
 def create_td3_agent(cfg, train_env_agent, eval_env_agent):
@@ -379,11 +379,11 @@ def tune(objective):
 	# Write report
 	study.trials_dataframe().to_csv("study_results_td3_swimmer.csv")
 
-	fig1 = plot_optimization_history(study)
-	fig2 = plot_param_importances(study)
+	#fig1 = plot_optimization_history(study)
+	#fig2 = plot_param_importances(study)
 
-	fig1.show()
-	fig2.show()
+	#fig1.show()
+	#fig2.show()
 
 def main(cfg: DictConfig):
     # print(OmegaConf.to_yaml(cfg))
