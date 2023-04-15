@@ -282,10 +282,8 @@ def run_td3(cfg, agent):
 def main(cfg: DictConfig):
     # print(OmegaConf.to_yaml(cfg))
     chrono = Chrono()
-    logdir = "./plot/"
-    reward_logger = RewardLogger(logdir + "td3.steps", logdir + "td3.rwd")
     torch.manual_seed(cfg.algorithm.seed)
-    run_td3(cfg, reward_logger)
+    run_td3(cfg, None)
     #study = optuna.create_study()
     #study.optimize(objective, n_trials=100)
     chrono.stop()
