@@ -32,6 +32,7 @@ class TD3:
         self.cfg = cfg
         self.agent = {}
         self.env_agent = {}
+        self.delta_list = []
 
         # Create the environment agents
         self.env_agent['train_env_agent'] = AutoResetGymAgent(
@@ -73,6 +74,11 @@ class TD3:
         self.agent['target_q_agent_2'] = TemporalAgent(self.agent['target_critic_2'])
 
 
+    @classmethod
+    def create_agent(cls, cfg):
+        return cls(cfg)
+
+
     def setup_optimizers(self):
         actor_optimizer_args = get_arguments(self.cfg.actor_optimizer)
         parameters = self.agent['actor'].parameters()
@@ -95,7 +101,7 @@ class TD3:
         return critic_loss_1, critic_loss_2
 
 
-    def compute_actor_loss(q_values):
+    def compute_actor_loss(self, q_values):
         actor_loss = -q_values
         return actor_loss.mean()
 
@@ -107,7 +113,6 @@ class TD3:
             logdir = "./plot/"
             reward_logger = RewardLogger(logdir + "td3.steps", logdir + "td3.rwd")
             best_reward = -10e9
-            delta_list = []
 
             train_workspace = Workspace()
             rb = ReplayBuffer(max_size=self.cfg.algorithm.buffer_size)
@@ -118,7 +123,7 @@ class TD3:
             tmp_steps = 0
 
             # Training loop
-            for epoch in range(self.cfg.algorithm.max_epochs):
+            for epoch in range(10005):
                 # Execute the agent in the workspace
                 if epoch > 0:
                     train_workspace.zero_grad()
@@ -154,7 +159,7 @@ class TD3:
 
                         with torch.no_grad():
                             # Replace the action at t+1 in the RB with \pi(s_{t+1}), to compute Q(s_{t+1}, \pi(s_{t+1}) below
-                            ag_actor(rb_workspace, t=1, n_steps=1)
+                            self.agent['ag_actor'](rb_workspace, t=1, n_steps=1)
 
                             # Compute q_values: at t+1 we have Q(s_{t+1}, \pi(s_{t+1})
                             self.agent['target_q_agent_1'](rb_workspace, t=1, n_steps=1)
@@ -185,7 +190,7 @@ class TD3:
 
                         # Actor update
                         # Now we determine the actions the current policy would take in the states from the RB
-                        ag_actor(rb_workspace, t=0, n_steps=1)
+                        self.agent['ag_actor'](rb_workspace, t=0, n_steps=1)
 
                         # We determine the Q values resulting from actions of the current policy
                         # We arbitrarily chose to update the actor with respect to critic_1
@@ -194,7 +199,7 @@ class TD3:
                         q_values_1 = rb_workspace["q_value"]
                         # self.agent['q_agent_2'](rb_workspace, t=0, n_steps=1)
                         # q_values_2 = rb_workspace["q_value"]
-                        current_q_values = torch.min(q_values_1, q_values_2).squeeze(-1)
+                        current_q_values = q_values_1.squeeze(-1)
                         actor_loss = self.compute_actor_loss(current_q_values)
                         logger.add_log("actor_loss", actor_loss, nb_steps)
 
@@ -218,7 +223,7 @@ class TD3:
                     q_values = eval_workspace["q_value"].squeeze()
                     delta = q_values - rewards
                     maxi_delta = delta.max(axis=0)[0].detach().numpy()
-                    delta_list.append(maxi_delta)
+                    self.delta_list.append(maxi_delta)
                     mean = rewards[-1].mean()
                     logger.add_log("reward", mean, nb_steps)
                     print(f"nb_steps: {nb_steps}, reward: {mean}")
@@ -241,16 +246,12 @@ class TD3:
 
                         self.agent['eval_agent'].save_model(filename)
 
-            delta_list_mean = np.array(delta_list).mean(axis=1)
-            delta_list_std = np.array(delta_list).std(axis=1)
+            delta_list_mean = np.array(self.delta_list).mean(axis=1)
+            delta_list_std = np.array(self.delta_list).std(axis=1)
             return delta_list_mean, delta_list_std, mean
         except KeyboardInterrupt:
             print('\nProgram interrupted by user before terminating')
 
-
-    @classmethod
-    def create_agent(cls, cfg):
-        return cls(cfg)
 
 def make_gym_env(env_name, xml_file):
     xml_file = assets_path + xml_file
@@ -262,11 +263,11 @@ def make_gym_env(env_name, xml_file):
 )
 
 def main(cfg):
-    # print(OmegaConf.to_yaml(cfg))
     chrono = Chrono()
-    TD3(cfg).run()
+    a = TD3(cfg)
+    a.run()
+    a.run()
     chrono.stop()
-    # main_loop(cfg)
 
 if __name__ == "__main__":
     sys.path.append(os.getcwd())

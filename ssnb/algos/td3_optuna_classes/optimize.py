@@ -1,3 +1,4 @@
+import hydra
 import optuna
 
 from optuna.samplers import TPESampler
@@ -105,3 +106,19 @@ def tune(agent):
     fig2 = plot_param_importances(study)
     fig1.show()
     fig2.show()
+
+
+@hydra.main(
+    config_path="../configs/td3/",
+    config_name="td3_swimmer_optuna.yaml",
+)
+
+def main(cfg):
+    chrono = Chrono()
+    a = TD3(cfg)
+    tune(a)
+    chrono.stop()
+
+if __name__ == "__main__":
+    sys.path.append(os.getcwd())
+    main()
