@@ -6,8 +6,10 @@ import torch
 import torch.nn as nn
 import gym
 import hydra
+import matplotlib
 
 from omegaconf import DictConfig
+
 from bbrl.utils.chrono import Chrono
 from bbrl import get_arguments, get_class
 from bbrl.workspace import Workspace
@@ -15,6 +17,7 @@ from bbrl.agents import Agents, TemporalAgent
 from bbrl.agents.gymb import AutoResetGymAgent, NoAutoResetGymAgent
 from bbrl.utils.replay_buffer import ReplayBuffer
 from bbrl.workspace import Workspace
+
 from ssnb.models.actors import ContinuousDeterministicActor
 from ssnb.models.critics import ContinuousQAgent
 from ssnb.models.exploration_agents import AddGaussianNoise
@@ -22,9 +25,11 @@ from ssnb.models.loggers import Logger, RewardLogger
 from ssnb.models.shared_models import soft_update_params
 
 # HYDRA_FULL_ERROR = 1
-import matplotlib
+
+
 matplotlib.use("TkAgg")
 assets_path = os.getcwd() + "/../assets/"
+
 
 # Create the TD3 Agent
 def create_td3_agent(cfg, train_env_agent, eval_env_agent):
@@ -57,9 +62,11 @@ def create_td3_agent(cfg, train_env_agent, eval_env_agent):
         target_critic_2,
     )
 
+
 def make_gym_env(env_name, xml_file):
     xml_file = assets_path + xml_file
     return gym.make(env_name, xml_file=xml_file)
+
 
 # Configure the optimizer
 def setup_optimizers(cfg, actor, critic_1, critic_2):
@@ -73,6 +80,7 @@ def setup_optimizers(cfg, actor, critic_1, critic_2):
     )
     return actor_optimizer, critic_optimizer
 
+
 def compute_critic_loss(cfg, reward, must_bootstrap, q_values_1, q_values_2, q_next):
     # Compute temporal difference
     target = (
@@ -85,9 +93,12 @@ def compute_critic_loss(cfg, reward, must_bootstrap, q_values_1, q_values_2, q_n
     critic_loss_1 = td_error_1.mean()
     critic_loss_2 = td_error_2.mean()
     return critic_loss_1, critic_loss_2
+
+
 def compute_actor_loss(q_values):
     actor_loss = -q_values
     return actor_loss.mean()
+
 
 class TD3_agent:
     def __init__(self, cfg):
@@ -131,6 +142,7 @@ class TD3_agent:
         self.tmp_steps = 0
         self.is_eval = bool
         self.last_mean_reward = float
+        
 
 def run_td3(cfg, agent):
     # 1)  Build the logger
@@ -288,6 +300,8 @@ def main(cfg: DictConfig):
     #study.optimize(objective, n_trials=100)
     chrono.stop()
     # main_loop(cfg)
+    
+    
 if __name__ == "__main__":
     sys.path.append(os.getcwd())
     main()
