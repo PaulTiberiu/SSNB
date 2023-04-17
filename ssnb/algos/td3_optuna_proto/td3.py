@@ -28,7 +28,7 @@ from ssnb.models.shared_models import soft_update_params
 
 
 matplotlib.use("TkAgg")
-assets_path = os.getcwd() + "/../assets/"
+assets_path = os.getcwd() + "/../../assets/"
 
 
 # Create the TD3 Agent
@@ -263,8 +263,8 @@ def run_td3(cfg, agent):
             reward_logger.add(agent.nb_steps, mean)
             agent.is_eval = True
             agent.last_mean_reward = mean
-            if cfg.save_best and mean > best_reward:
-                best_reward = mean
+            if cfg.save_best and mean > agent.best_reward:
+                agent.best_reward = mean
                 directory = "./td3_agent/"
                 if not os.path.exists(directory):
                     os.makedirs(directory)
@@ -296,9 +296,9 @@ def main(cfg: DictConfig):
     chrono = Chrono()
     torch.manual_seed(cfg.algorithm.seed)
     run_td3(cfg, None)
-    #study = optuna.create_study()
+    study = optuna.create_study()
     #study.optimize(objective, n_trials=100)
-    chrono.stop()
+    #chrono.stop()
     # main_loop(cfg)
     
     
