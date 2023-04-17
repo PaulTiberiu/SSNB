@@ -4,6 +4,7 @@ import torch
 import gym
 import hydra
 import optuna
+import omegaconf
 
 from optuna.samplers import TPESampler
 from optuna.pruners import MedianPruner
@@ -37,33 +38,63 @@ def parseSampling(trial, paramName, paramConfig):
         # tau_target between 0.05 and 0.005
         return trial.suggest_float("tau_target", paramConfig.min, paramConfig.max, log=True)
 
+    elif paramName == 'action_noise':
+        # action_noise between 0 and 0.1
+        return trial.suggest_float("action_noise", paramConfig.min, paramConfig.max, log=True)
+
+    elif paramName == 'architecture':
+        # actor hidden size between [32, 32] and [256, 256]
+        ahs = 2 ** trial.suggest_int("actor_hidden_size", paramConfig.min, paramConfig.max)
+        chs = 2 ** trial.suggest_int("critic_hidden_size", paramConfig.min, paramConfig.max)
+        return {'actor_hidden_size': [ahs, ahs], 'critic_hidden_size': [chs, chs]}
+
     else:
         print(f'Hyperparameter {paramName} is not supported')
 
 
-def sample_params(trial):
-    """Sampler for hyperparameters."""
+def sample_params(trial, agent):
+    # cf. actor_optimizer, critic_optimizer et architecture
+    config = omegaconf.create(
+        {
+        'render_agents': False,
+        'save_best': False, 
+        'logger': 
+            {
+            'classname': 'bbrl.utils.logger.TFLogger',
+            'log_dir': './td3_logs/',
+            'verbose': False,
+            'every_n_seconds': 10
+            }
+        'algorithm': {},
+        'gym_env':
+            {
+                'classname': '__main__.make_gym_env',
+                'env_name': 'Swimmer-v3',
+                'xml_file': 'swimmer3.xml'
+            },
+        'actor_optimizer':
+            {
+                'classname': torch.optim.Adam
+            },
+        'critic_optimizer':
+            {
+                'classname': torch.optim.Adam 
+            } 
+        }
+    )
 
-    # action_noise between 0 and 0.1
-    params.algorithm.action_noise = trial.suggest_float("action_std", agent.cfg.trial.action_noise.min, agent.cfg.trial.action_noise.max, log=True)
+    for key, value in agent.cfg.algorithm.items():
+        config.algorithm[key] = value
 
-    # actor hidden size between [32, 32] and [256, 256]
-    ahs = 2 ** trial.suggest_int("actor_hidden_size", agent.cfg.trial.architecture.actor_hidden_size.min, agent.cfg.trial.architecture.actor_hidden_size.max)
-    params.algorithm.architecture.actor_hidden_size = [ahs, ahs]
+    for paramName, paramConfig in agent.cfg.trial.items():
+        suggested_value = parseSampling(trial, paramName, paramConfig)
+        config.algorithm[paramName] = suggested_value
 
-    # critic hidden size between [32, 32] and [256, 256]
-    chs = 2 ** trial.suggest_int("critic_hidden_size", agent.cfg.trial.architecture.critic_hidden_size.min, agent.cfg.trial.architecture.critic_hidden_size.max)
-    params.algorithm.architecture.critic_hidden_size = [chs, chs]
+    config.actor_optimizer['lr'] = trial.suggest_float("actor_optimizer_lr", agent.cfg.trial_actor_optimizer.min, agent.cfg.trial_actor_optimizer.max, log=True)
+    config.critic_optimizer['lr'] = trial.suggest_float("critic_optimizer_lr", agent.cfg.trial_critic_optimizer.min, agent.cfg.trial_critic_optimizer.max, log=True)
 
-    # actor learning rate between 1e-5 and 1
-    params.actor_optimizer.lr = trial.suggest_float("actor_lr", agent.cfg.actor_optimizer.lr.min, agent.cfg.actor_optimizer.lr.max, log=True)
-    # critic learning rate between 1e-5 and 1
-    params.critic_optimizer.lr = trial.suggest_float("critic_lr", agent.cfg.critic_optimizer.lr.min, agent.cfg.critic_optimizer.lr.max, log=True)
-
-    params.algorithm.n_steps = n_steps
-    params.algorithm.max_epochs = int(params.algorithm.n_timesteps // n_steps) # to have a run of n_timesteps
-
-    return params
+    #config.algorithm.max_epochs = int(config.algorithm.n_timesteps // config.algorithm.n_steps) # to have a run of n_timesteps
+    return config
 
 
 def objective_agent(trial, agent):
@@ -71,9 +102,8 @@ def objective_agent(trial, agent):
         is_pruned = False
         nan_encountered = False
 
-        #config = sample_params(trial)
+        #config = sample_params(trial, agent)
         trial_agent = agent.create_agent(agent.cfg)
-
 
         try:
             for epoch in range(1):

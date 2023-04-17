@@ -9,24 +9,46 @@
 
     algorithm:
       seed: 2
-      buffer_size: 1e6
       max_grad_norm: 0.5
       n_envs: 1
-      n_steps: 1
       n_updates: 1
-      batch_size: 100
-      tau_target: 0.005
       eval_interval: 2500
       max_epochs: 990000
-      discount_factor: 0.9999
       learning_starts: 10000
       policy: 'MlpPolicy'
       gradient_steps: 1
       nb_evals: 1
-      action_noise: 0.1
       architecture:
         actor_hidden_size: [256, 256]
         critic_hidden_size: [256, 256]
+
+    trial:
+      discount_factor: 
+        min: 0.9
+        max: 0.9999
+      n_steps: 
+        min: 7
+        max: 10
+      buffer_size: 
+        min: 1e5
+        max: 1e6
+      batch_size: 
+        min: 100
+        max: 300
+      tau_target: 
+        min: 0.005
+        max: 0.05    
+      action_noise: 
+        min: 0.00001
+        max: 0.1
+
+    trial_actor_optimizer:
+      min: 1e-5
+      max: 1
+
+    trial_critic_optimizer:
+      min: 1e-5
+      max: 1
 
     gym_env:
       classname: __main__.make_gym_env
