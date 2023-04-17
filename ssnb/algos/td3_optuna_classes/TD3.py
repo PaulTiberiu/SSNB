@@ -23,7 +23,7 @@ from ssnb.models.exploration_agents import AddGaussianNoise
 from ssnb.models.loggers import Logger, RewardLogger
 from ssnb.models.shared_models import soft_update_params
 
-assets_path = os.getcwd() + "/../../assets/"
+assets_path = os.getcwd() + '/../../assets/'
 
 
 class TD3:
@@ -32,7 +32,7 @@ class TD3:
         self.cfg = cfg
         self.agent = {}
         self.env_agent = {}
-        self.delta_list = []
+        self.best_reward = -10e9
 
         # Create the environment agents
         self.env_agent['train_env_agent'] = AutoResetGymAgent(
@@ -112,7 +112,6 @@ class TD3:
             logger = Logger(self.cfg)
             logdir = "./plot/"
             reward_logger = RewardLogger(logdir + "td3.steps", logdir + "td3.rwd")
-            best_reward = -10e9
 
             train_workspace = Workspace()
             rb = ReplayBuffer(max_size=self.cfg.algorithm.buffer_size)
@@ -123,7 +122,7 @@ class TD3:
             tmp_steps = 0
 
             # Training loop
-            for epoch in range(10005):
+            for epoch in range(self.cfg.algorithm.max_epochs):
                 # Execute the agent in the workspace
                 if epoch > 0:
                     train_workspace.zero_grad()
@@ -223,14 +222,13 @@ class TD3:
                     q_values = eval_workspace["q_value"].squeeze()
                     delta = q_values - rewards
                     maxi_delta = delta.max(axis=0)[0].detach().numpy()
-                    self.delta_list.append(maxi_delta)
                     mean = rewards[-1].mean()
                     logger.add_log("reward", mean, nb_steps)
                     print(f"nb_steps: {nb_steps}, reward: {mean}")
                     reward_logger.add(nb_steps, mean)
 
-                    if self.cfg.save_best and mean > best_reward:
-                        best_reward = mean
+                    if self.cfg.save_best and mean > self.best_reward:
+                        self.best_reward = mean
                         directory = "./td3_agent/"
 
                         if not os.path.exists(directory):
@@ -246,11 +244,9 @@ class TD3:
 
                         self.agent['eval_agent'].save_model(filename)
 
-            delta_list_mean = np.array(self.delta_list).mean(axis=1)
-            delta_list_std = np.array(self.delta_list).std(axis=1)
-            return delta_list_mean, delta_list_std, mean
+            return mean
         except KeyboardInterrupt:
-            print('\nProgram interrupted by user before terminating')
+            print('\nAlgorithm interrupted by user before terminating')
 
 
 def make_gym_env(env_name, xml_file):
@@ -265,7 +261,6 @@ def make_gym_env(env_name, xml_file):
 def main(cfg):
     chrono = Chrono()
     a = TD3(cfg)
-    a.run()
     a.run()
     chrono.stop()
 

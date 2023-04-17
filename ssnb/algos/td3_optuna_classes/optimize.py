@@ -1,3 +1,7 @@
+import sys
+import os
+import torch
+import gym
 import hydra
 import optuna
 
@@ -5,40 +9,56 @@ from optuna.samplers import TPESampler
 from optuna.pruners import MedianPruner
 from optuna.visualization import plot_optimization_history, plot_param_importances
 
+from bbrl.utils.chrono import Chrono
+
+from ssnb.algos.td3_optuna_classes.TD3 import TD3
+
+assets_path = os.getcwd() + '/../../assets/'
+
+
+def parseSampling(trial, paramName, paramConfig):
+    if paramName == 'discount_factor':
+        # discount factor between 0.9 and 0.9999
+        return trial.suggest_float('discount_factor', paramConfig.min, paramConfig.max, log=True)
+
+    elif paramName == 'n_steps':
+        # n_steps 128, 256, 512, ...
+        return 2 ** trial.suggest_int('n_steps', paramConfig.min, paramConfig.max)
+
+    elif paramName == 'buffer_size':
+        # buffer_size between 1e5 and 1e6
+        return trial.suggest_int('buffer_size', paramConfig.min, paramConfig.max)
+
+    elif paramName == 'batch_size':
+        # batch_size between 100 and 300
+        return trial.suggest_int("batch_size", paramConfig.min, paramConfig.max)
+
+    elif paramName == 'tau_target':
+        # tau_target between 0.05 and 0.005
+        return trial.suggest_float("tau_target", paramConfig.min, paramConfig.max, log=True)
+
+    else:
+        print(f'Hyperparameter {paramName} is not supported')
+
 
 def sample_params(trial):
     """Sampler for hyperparameters."""
 
-    # discount factor between 0.9 and 0.9999
-    params.algorithm.discount_factor = trial.suggest_float("discount_factor", cfg.algorithm.discount_factor.min, cfg.algorithm.discount_factor.max, log=True)
-
-    # n_steps 128, 256, 512, ...
-    n_steps = 2 ** trial.suggest_int("n_steps", cfg.algorithm.n_steps.min, cfg.algorithm.n_steps.max)
-
-    # buffer_size between 1e5 and 1e6
-    params.algorithm.buffer_size = trial.suggest_int("buffer_size", cfg.algorithm.buffer_size.min, cfg.algorithm.buffer_size.max)
-
-    # batch_size between 100 and 300
-    params.algorithm.batch_size = trial.suggest_int("batch_size", cfg.algorithm.batch_size.min, cfg.algorithm.batch_size.max)
-
-    # tau_target between 0.05 and 0.005
-    params.algorithm.tau_target = trial.suggest_float("tau_target", cfg.algorithm.tau_target.min, cfg.algorithm.tau_target.max, log=True)
-
     # action_noise between 0 and 0.1
-    params.algorithm.action_noise = trial.suggest_float("action_std", cfg.algorithm.action_noise.min, cfg.algorithm.action_noise.max, log=True)
+    params.algorithm.action_noise = trial.suggest_float("action_std", agent.cfg.trial.action_noise.min, agent.cfg.trial.action_noise.max, log=True)
 
     # actor hidden size between [32, 32] and [256, 256]
-    ahs = 2 ** trial.suggest_int("actor_hidden_size", cfg.algorithm.architecture.actor_hidden_size.min, cfg.algorithm.architecture.actor_hidden_size.max)
+    ahs = 2 ** trial.suggest_int("actor_hidden_size", agent.cfg.trial.architecture.actor_hidden_size.min, agent.cfg.trial.architecture.actor_hidden_size.max)
     params.algorithm.architecture.actor_hidden_size = [ahs, ahs]
 
     # critic hidden size between [32, 32] and [256, 256]
-    chs = 2 ** trial.suggest_int("critic_hidden_size", cfg.algorithm.architecture.critic_hidden_size.min, cfg.algorithm.architecture.critic_hidden_size.max)
+    chs = 2 ** trial.suggest_int("critic_hidden_size", agent.cfg.trial.architecture.critic_hidden_size.min, agent.cfg.trial.architecture.critic_hidden_size.max)
     params.algorithm.architecture.critic_hidden_size = [chs, chs]
 
     # actor learning rate between 1e-5 and 1
-    params.actor_optimizer.lr = trial.suggest_float("actor_lr", cfg.actor_optimizer.lr.min, cfg.actor_optimizer.lr.max, log=True)
+    params.actor_optimizer.lr = trial.suggest_float("actor_lr", agent.cfg.actor_optimizer.lr.min, agent.cfg.actor_optimizer.lr.max, log=True)
     # critic learning rate between 1e-5 and 1
-    params.critic_optimizer.lr = trial.suggest_float("critic_lr", cfg.critic_optimizer.lr.min, cfg.critic_optimizer.lr.max, log=True)
+    params.critic_optimizer.lr = trial.suggest_float("critic_lr", agent.cfg.critic_optimizer.lr.min, agent.cfg.critic_optimizer.lr.max, log=True)
 
     params.algorithm.n_steps = n_steps
     params.algorithm.max_epochs = int(params.algorithm.n_timesteps // n_steps) # to have a run of n_timesteps
@@ -50,14 +70,14 @@ def objective_agent(trial, agent):
         mean = 0
         is_pruned = False
         nan_encountered = False
-        nb_epoch_per_step = 1
 
-        config = sample_params(trial)
-        trial_agent = agent.create_agent(config)
+        #config = sample_params(trial)
+        trial_agent = agent.create_agent(agent.cfg)
+
 
         try:
-            for epoch in range(trial_agent.cfg.algorithm.max_epochs):
-                mean = trial_agent.run(nb_epoch_per_step)
+            for epoch in range(1):
+                mean = trial_agent.run()
                 trial.report(mean, epoch)
                 if trial.should_prune():
                     is_pruned = True
@@ -65,7 +85,6 @@ def objective_agent(trial, agent):
 
         except AssertionError as e:
             # Sometimes, random hyperparams can generate NaN
-            print(e)
             nan_encountered = True
 
         # Tell the optimizer that the trial failed
@@ -76,6 +95,7 @@ def objective_agent(trial, agent):
             raise optuna.exceptions.TrialPruned()
 
         return mean
+
 
 
 def tune(agent):
@@ -92,10 +112,12 @@ def tune(agent):
         print('\nStudy interrupted by user')
         
     print(f'Number of finished trials: {len(study.trials)}\n')
+
     trial = study.best_trial
     print(f'=== Best trial ===\nValue: {trial.value}\nParams: ')
     for key, value in trial.params.items():
         print(f"{key}: {value}\t")
+
     print('\nUser attributes: ')
     for key, value in trial.user_attrs.items():
         print(f"{key}: {value}\t")
@@ -108,9 +130,14 @@ def tune(agent):
     fig2.show()
 
 
+def make_gym_env(env_name, xml_file):
+    xml_file = assets_path + xml_file
+    return gym.make(env_name, xml_file=xml_file)
+
+
 @hydra.main(
     config_path="../configs/td3/",
-    config_name="td3_swimmer_optuna.yaml",
+    config_name="td3_swimmer_optuna2.yaml",
 )
 
 def main(cfg):
