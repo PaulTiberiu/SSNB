@@ -4,7 +4,8 @@ import torch
 import gym
 import hydra
 import optuna
-import omegaconf
+
+from omegaconf import OmegaConf
 
 from optuna.samplers import TPESampler
 from optuna.pruners import MedianPruner
@@ -15,6 +16,7 @@ from bbrl.utils.chrono import Chrono
 from ssnb.algos.td3_optuna_classes.TD3 import TD3
 
 assets_path = os.getcwd() + '/../../assets/'
+optimization_path = os.getcwd() + '/../configs/td3/optimize_swimmer3.yaml'
 
 
 def parseSampling(trial, paramName, paramConfig):
@@ -52,58 +54,25 @@ def parseSampling(trial, paramName, paramConfig):
         print(f'Hyperparameter {paramName} is not supported')
 
 
-def sample_params(trial, agent):
+def sample_params(trial, agent, optimization_config):
     # cf. actor_optimizer, critic_optimizer et architecture
-    config = omegaconf.create(
-        {
-        'render_agents': False,
-        'save_best': False, 
-        'logger': 
-            {
-            'classname': 'bbrl.utils.logger.TFLogger',
-            'log_dir': './td3_logs/',
-            'verbose': False,
-            'every_n_seconds': 10
-            }
-        'algorithm': {},
-        'gym_env':
-            {
-                'classname': '__main__.make_gym_env',
-                'env_name': 'Swimmer-v3',
-                'xml_file': 'swimmer3.xml'
-            },
-        'actor_optimizer':
-            {
-                'classname': torch.optim.Adam
-            },
-        'critic_optimizer':
-            {
-                'classname': torch.optim.Adam 
-            } 
-        }
-    )
+    config = agent.cfg.copy()
 
-    for key, value in agent.cfg.algorithm.items():
-        config.algorithm[key] = value
-
-    for paramName, paramConfig in agent.cfg.trial.items():
+    for paramName, paramConfig in optimization_config.params.items():
         suggested_value = parseSampling(trial, paramName, paramConfig)
         config.algorithm[paramName] = suggested_value
-
-    config.actor_optimizer['lr'] = trial.suggest_float("actor_optimizer_lr", agent.cfg.trial_actor_optimizer.min, agent.cfg.trial_actor_optimizer.max, log=True)
-    config.critic_optimizer['lr'] = trial.suggest_float("critic_optimizer_lr", agent.cfg.trial_critic_optimizer.min, agent.cfg.trial_critic_optimizer.max, log=True)
 
     #config.algorithm.max_epochs = int(config.algorithm.n_timesteps // config.algorithm.n_steps) # to have a run of n_timesteps
     return config
 
 
-def objective_agent(trial, agent):
+def objective_agent(trial, agent, optimization_config):
         mean = 0
         is_pruned = False
         nan_encountered = False
 
-        #config = sample_params(trial, agent)
-        trial_agent = agent.create_agent(agent.cfg)
+        config = sample_params(trial, agent, optimization_config)
+        trial_agent = agent.create_agent(config)
 
         try:
             for epoch in range(1):
@@ -113,9 +82,12 @@ def objective_agent(trial, agent):
                     is_pruned = True
                     break
 
-        except AssertionError as e:
+        except AssertionError:
             # Sometimes, random hyperparams can generate NaN
             nan_encountered = True
+
+        except KeyboardInterrupt:
+            print('Trial interrupted before terminating')
 
         # Tell the optimizer that the trial failed
         if nan_encountered:
@@ -128,16 +100,16 @@ def objective_agent(trial, agent):
 
 
 
-def tune(agent):
+def tune(agent, optimization_config):
     # Création et lancement de l'étude
-    sampler = TPESampler(n_startup_trials=agent.cfg.study.n_startup_trials)
-    pruner = MedianPruner(n_startup_trials=agent.cfg.study.n_startup_trials, n_warmup_steps=agent.cfg.study.n_warmup_steps // 3)
+    sampler = TPESampler(n_startup_trials=optimization_config.study.n_startup_trials)
+    pruner = MedianPruner(n_startup_trials=optimization_config.study.n_startup_trials, n_warmup_steps=optimization_config.study.n_warmup_steps // 3)
     study = optuna.create_study(sampler=sampler, pruner=pruner, direction="maximize")
 
-    objective = lambda trial: objective_agent(trial, agent)
+    objective = lambda trial: objective_agent(trial, agent, optimization_config)
 
     try:
-        study.optimize(objective, n_trials=agent.cfg.study.n_trials, n_jobs=agent.cfg.study.n_jobs, timeout=agent.cfg.study.timeout)
+        study.optimize(objective, n_trials=optimization_config.study.n_trials, n_jobs=optimization_config.study.n_jobs, timeout=optimization_config.study.timeout)
     except KeyboardInterrupt:
         print('\nStudy interrupted by user')
         
@@ -167,13 +139,15 @@ def make_gym_env(env_name, xml_file):
 
 @hydra.main(
     config_path="../configs/td3/",
-    config_name="td3_swimmer_optuna2.yaml",
+    config_name="td3_swimmer3.yaml",
 )
 
 def main(cfg):
     chrono = Chrono()
     a = TD3(cfg)
-    tune(a)
+
+    optimization_config = OmegaConf.load(optimization_path)
+    tune(a, optimization_config)
     chrono.stop()
 
 if __name__ == "__main__":
