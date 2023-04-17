@@ -133,11 +133,11 @@ Using the command mentioned earlier, we were able to track the reward data throu
 
 #### Reward curve
 
-![reward curve](https://github.com/PaulTiberiu/SSNB/blob/main/SB3/reward_curve.png)
+![reward curve](https://github.com/PaulTiberiu/SSNB/blob/main/sb3/reward_curve.png)
 
 #### Run summary
 
-![Run summary](https://github.com/PaulTiberiu/SSNB/blob/main/SB3/run_summary.png)
+![Run summary](https://github.com/PaulTiberiu/SSNB/blob/main/sb3/run_summary.png)
 
 
 
