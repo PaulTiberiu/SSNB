@@ -16,14 +16,12 @@ from bbrl.utils.chrono import Chrono
 from ssnb.algos.td3_optuna_classes.TD3 import TD3
 
 assets_path = os.getcwd() + '/../../assets/'
-optimization_path = os.getcwd() + '/../configs/td3/optimize_swimmer3.yaml'
 
 
 class Optimize:
-    def __init__(cfg):
+    def __init__(self, cfg):
         self.cfg = cfg
         agent_cfg = OmegaConf.load(cfg.agent.config)
-        print(agent_cfg)
 
         if cfg.agent.classname == 'TD3':
             self.agent = TD3(agent_cfg)
@@ -115,7 +113,7 @@ class Optimize:
         study = optuna.create_study(sampler=sampler, pruner=pruner, direction="maximize")
 
         try:
-            study.optimize(self.objective, n_trials=optimization_config.study.n_trials, n_jobs=optimization_config.study.n_jobs, timeout=optimization_config.study.timeout)
+            study.optimize(self.objective, n_trials=self.cfg.study.n_trials, n_jobs=self.cfg.study.n_jobs, timeout=self.cfg.study.timeout)
 
         except KeyboardInterrupt:
             print('\nStudy interrupted by user')
@@ -151,7 +149,7 @@ def make_gym_env(env_name, xml_file):
 
 def main(cfg):
     chrono = Chrono()
-    Optimize(cfg)
+    Optimize(cfg).tune()
     chrono.stop()
 
 if __name__ == "__main__":
