@@ -75,7 +75,7 @@ def objective_agent(trial, agent, optimization_config):
         trial_agent = agent.create_agent(config)
 
         try:
-            for epoch in range(1):
+            for epoch in range(7):
                 mean = trial_agent.run()
                 trial.report(mean, epoch)
                 if trial.should_prune():
