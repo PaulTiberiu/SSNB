@@ -1,12 +1,13 @@
 import sys
 import os
 import optuna
+import hydra
 
-from omegaconf import OmegaConf
+from omegaconf import OmegaConf, DictConfig
 
 from ssnb.models.loggers import RewardLogger
-from ssnb.algos.proto.td3_opt import run_td3
-from ssnb.algos.proto.ddpg import run_ddpg
+from ssnb.algos.td3_optuna_proto.td3v2 import run_td3
+from ssnb.algos.td3_optuna_proto.ddpg import run_ddpg
 
 from optuna.samplers import TPESampler
 from optuna.pruners import MedianPruner
@@ -16,6 +17,9 @@ from optuna.visualization import plot_optimization_history, plot_param_importanc
 
 def sample_td3_params(trial, params):
     """Sampler for TD3 hyperparameters."""
+    
+    #for tmp in params.optimize:
+    #	eval(params.algorithm.tmp = "trial.suggest_" + tmp.type + "("discount_factor", tmp.min, tmp.max, log=tmp.log)")
     
     #params = cfg.copy()
 
@@ -56,7 +60,7 @@ def sample_td3_params(trial, params):
     return params
 
 def objective(trial, cfg, run_algo):
-    params = OmegaConf.load("./configs/" + cfg)
+    params = cfg.copy()
     params = sample_td3_params(trial, params)
     nan_encountered = False
     
@@ -67,7 +71,7 @@ def objective(trial, cfg, run_algo):
         params.algorithm.max_epochs = 1
         
         for epoch in range(params.algorithm.max_epochs):
-            eval(run_algo + "(params, agent)")
+            run_algo(params, agent)
 
             if agent.is_eval:
                 trial.report(agent.mean, epoch)
@@ -89,14 +93,13 @@ def objective(trial, cfg, run_algo):
     return agent.last_mean_reward
 
 def tune(objective, cfg, run_algo):
-    params = OmegaConf.load("./configs/" + cfg)
 	# Creation and start of the study
-    sampler = TPESampler(n_startup_trials=params.study.n_startup_trials)
-    pruner = MedianPruner(n_startup_trials=params.study.n_startup_trials, n_warmup_steps=params.study.n_warmup_steps // 3)
+    sampler = TPESampler(n_startup_trials=cfg.study.n_startup_trials)
+    pruner = MedianPruner(n_startup_trials=cfg.study.n_startup_trials, n_warmup_steps=cfg.study.n_warmup_steps // 3)
     study = optuna.create_study(sampler=sampler, pruner=pruner, direction="maximize")
 	
     try:
-        study.optimize(lambda trial: objective(trial, cfg, run_algo), n_trials=params.study.n_trials, n_jobs=params.study.n_jobs, timeout=params.study.timeout)
+        study.optimize(lambda trial: objective(trial, cfg, run_algo), n_trials=cfg.study.n_trials, n_jobs=cfg.study.n_jobs, timeout=cfg.study.timeout)
     except KeyboardInterrupt:
         pass
 	
@@ -121,9 +124,10 @@ def tune(objective, cfg, run_algo):
 
     fig1.show()
     fig2.show()
-
+    
 def main(argv):
-    tune(objective, argv[0], argv[1])
+    cfg = OmegaConf.load("./configs/" + argv[0] + "/" + argv[0] + "_SO.yaml")
+    eval("tune(objective, cfg, run_" + argv[0] +")")
 
 if __name__ == "__main__":
     sys.path.append(os.getcwd())
