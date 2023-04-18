@@ -23,7 +23,7 @@ class Optimize:
         self.cfg = cfg
         agent_cfg = OmegaConf.load(cfg.agent.config)
 
-        if cfg.agent.classname == 'TD3':
+        if cfg.agent.classname == 'ssnb.algos.TD3.TD3':
             self.agent = TD3(agent_cfg)
 
         else:
@@ -85,9 +85,9 @@ class Optimize:
         trial_agent = self.agent.create_agent(config)
 
         try:
-            for epoch in range(7):
-                mean = trial_agent.run()
-                trial.report(mean, epoch)
+            for session in range(self.trial.n_epochs // self.trial.n_epochs_per_session):
+                mean = trial_agent.run(self.trial.n_epochs_per_session)
+                trial.report(mean, session)
                 if trial.should_prune():
                     is_pruned = True
                     break
