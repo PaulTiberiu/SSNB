@@ -33,6 +33,7 @@ class TD3:
         self.agent = {}
         self.env_agent = {}
         self.best_reward = -10e9
+        self.policy_filename = None
 
         # Create the environment agents
         self.env_agent['train_env_agent'] = AutoResetGymAgent(
@@ -108,6 +109,9 @@ class TD3:
 
     def run(self):
         try:
+            if self.filename:
+                self.agent['eval_agent'].load_model(self.policy_filename)
+
             # Build the loggers
             logger = Logger(self.cfg)
             logdir = "./plot/"
@@ -241,8 +245,13 @@ class TD3:
                         )
 
                         self.agent['eval_agent'].save_model(filename)
+            
+            if not self.policy_filename:
+                self.policy_filename = "./td3_agent/"  + self.cfg.gym_env.env_name + "#td3#T1_T2#" + str(mean.item()) + ".agt"
 
+            self.agent['eval_agent'].save_model(self.policy_filename)
             return mean
+            
         except KeyboardInterrupt:
             print('\nAlgorithm interrupted by user before terminating')
             return None

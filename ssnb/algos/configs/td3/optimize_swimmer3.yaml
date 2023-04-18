@@ -1,3 +1,7 @@
+    agent:
+        classname: TD3
+        config: ../configs/td3/td3_swimmer3.yaml
+
     params:
         buffer_size:
             min: 1e5
