@@ -68,7 +68,7 @@ class TD3:
 
 
         self.agent['ag_actor'] = TemporalAgent(self.agent['actor'])
-        self.agent['q_agent_1'] = TemporalAgent( self.agent['critic_1'])
+        self.agent['q_agent_1'] = TemporalAgent(self.agent['critic_1'])
         self.agent['target_q_agent_1'] = TemporalAgent(self.agent['target_critic_1'])
         self.agent['q_agent_2'] = TemporalAgent(self.agent['critic_2'])
         self.agent['target_q_agent_2'] = TemporalAgent(self.agent['target_critic_2'])
@@ -220,8 +220,6 @@ class TD3:
                     rewards = eval_workspace["env/cumulated_reward"]
                     self.agent['q_agent_1'](eval_workspace, t=0, stop_variable="env/done")
                     q_values = eval_workspace["q_value"].squeeze()
-                    delta = q_values - rewards
-                    maxi_delta = delta.max(axis=0)[0].detach().numpy()
                     mean = rewards[-1].mean()
                     logger.add_log("reward", mean, nb_steps)
                     print(f"nb_steps: {nb_steps}, reward: {mean}")
@@ -247,6 +245,7 @@ class TD3:
             return mean
         except KeyboardInterrupt:
             print('\nAlgorithm interrupted by user before terminating')
+            return None
 
 
 def make_gym_env(env_name, xml_file):
