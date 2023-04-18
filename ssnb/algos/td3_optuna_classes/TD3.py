@@ -111,6 +111,7 @@ class TD3:
         try:
             if self.policy_filename:
                 self.agent['eval_agent'].load_model(self.policy_filename)
+                self.agent['train_agent'].load_model(self.policy_filename)
 
             # Build the loggers
             logger = Logger(self.cfg)
@@ -249,7 +250,7 @@ class TD3:
             if not self.policy_filename:
                 self.policy_filename = "./td3_agent/"  + self.cfg.gym_env.env_name + "#td3#T1_T2#" + str(mean.item()) + ".agt"
 
-            self.agent['eval_agent'].save_model(self.policy_filename)
+            self.agent['train_agent'].save_model(self.policy_filename)
             return mean
             
         except KeyboardInterrupt:

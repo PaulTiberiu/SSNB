@@ -25,7 +25,9 @@ class Optimize:
 
         if cfg.agent.classname == 'TD3':
             self.agent = TD3(agent_cfg)
-    
+
+        else:
+            self.agent = None    
     
     def parseSampling(self, trial, paramName, paramConfig):
         if paramName == 'discount_factor':
