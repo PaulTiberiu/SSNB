@@ -1,0 +1,69 @@
+    render_agents: False
+    save_best: True
+
+    logger:
+      classname: bbrl.utils.logger.TFLogger
+      log_dir: ./td3_logs/
+      verbose: False
+      every_n_seconds: 10
+
+    algorithm:
+      seed: 2
+      max_grad_norm: 0.5
+      n_envs: 1
+      n_updates: 2
+      n_timesteps: 1e6
+      eval_interval: 10000
+      max_epochs: 500000
+      learning_starts: 10000
+      nb_evals: 5
+      discount_factor: 
+        min: 0.9
+        max: 0.9999
+      n_steps: 
+        min: 7
+        max: 10
+      buffer_size: 
+        min: 1e5
+        max: 1e6
+      batch_size: 
+        min: 100
+        max: 300
+      tau_target: 
+        min: 0.005
+        max: 0.05    
+      action_noise: 
+        min: 0.00001
+        max: 0.1
+      architecture:
+        actor_hidden_size: 
+          min: 5
+          max: 8
+        critic_hidden_size:
+          min: 5
+          max: 8
+
+    gym_env:
+      classname: __main__.make_gym_env
+      env_name: Swimmer-v3
+      xml_file: swimmer3.xml
+
+    actor_optimizer:
+      classname: torch.optim.Adam
+      lr: 
+        min: 1e-5
+        max: 1
+
+    critic_optimizer:
+      classname: torch.optim.Adam
+      lr: 
+        min: 1e-5
+        max: 1
+    
+    study:
+      algo: td3
+      n_startup_trials: 5
+      n_warmup_steps: 2
+      n_trials: 100
+      n_jobs: 3
+      timeout: 900
