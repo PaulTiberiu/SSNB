@@ -12,6 +12,8 @@
         tau_target:
             min: 0.005
             max: 0.05
+            type: float
+            log: true
 
     study:
         n_startup_trials: 1
