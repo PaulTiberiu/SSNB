@@ -30,6 +30,7 @@ class TD3:
     def __init__(self, cfg):
         torch.manual_seed(cfg.algorithm.seed)
         self.cfg = cfg
+        self.budget = cfg.algorithm.budget
         self.agent = {}
         self.env_agent = {}
         self.best_reward = -10e9
@@ -125,23 +126,28 @@ class TD3:
             actor_optimizer, critic_optimizer = self.setup_optimizers()
             nb_steps = 0
             tmp_steps = 0
-
+            epoch = 0
+            
             # Training loop
-            for epoch in range(n_epochs):
+            while self.budget > 0:
                 # Execute the agent in the workspace
+                if self.budget % self.cfg.algorithm.n_steps:
+                    n_steps = self.budget
+                else:
+                    n_steps = self.cfg.algorithm.n_steps
                 if epoch > 0:
                     train_workspace.zero_grad()
                     train_workspace.copy_n_last_steps(1)
-                    self.agent['train_agent'](train_workspace, t=1, n_steps=self.cfg.algorithm.n_steps)  # check if it should be n_steps=cfg.algorithm.n_steps - 1
+                    self.agent['train_agent'](train_workspace, t=1, n_steps=n_steps)  # check if it should be n_steps=cfg.algorithm.n_steps - 1
 
                 else:
-                    self.agent['train_agent'](train_workspace, t=0, n_steps=self.cfg.algorithm.n_steps)
+                    self.agent['train_agent'](train_workspace, t=0, n_steps=n_steps)
 
                 transition_workspace = train_workspace.get_transitions()
                 action = transition_workspace["action"]
                 nb_steps += action[0].shape[0]
 
-                if epoch > 0 or self.cfg.algorithm.n_steps > 1:
+                if epoch > 0 or n_steps > 1:
                     rb.put(transition_workspace)
 
                 for _ in range(self.cfg.algorithm.n_updates):
@@ -246,6 +252,8 @@ class TD3:
                         )
 
                         self.agent['eval_agent'].save_model(filename)
+                        
+                epoch += 1
             
             if not self.policy_filename:
                 self.policy_filename = "./td3_agent/"  + self.cfg.gym_env.env_name + "#td3#T1_T2#" + str(mean.item()) + ".agt"
