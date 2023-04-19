@@ -13,7 +13,7 @@
             min: 0.005
             max: 0.05
             type: float
-            log: true
+            log: True
 
     study:
         n_startup_trials: 1
