@@ -124,11 +124,15 @@ def tune(objective, cfg, run_algo):
 
     fig1.show()
     fig2.show()
+
+@hydra.main(
+    config_path="./configs/",
+    config_name="opt_cfg.yaml",
+)
     
-def main(argv):
-    cfg = OmegaConf.load("./configs/" + argv[0] + "/" + argv[0] + "_SO.yaml")
-    eval("tune(objective, cfg, run_" + argv[0] +")")
+def main(cfg: DictConfig):
+    eval("tune(objective, cfg, run_" + cfg.study.algo +")")
 
 if __name__ == "__main__":
     sys.path.append(os.getcwd())
-    main(sys.argv[1:])
+    main()
