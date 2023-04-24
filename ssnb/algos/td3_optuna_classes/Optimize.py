@@ -79,7 +79,7 @@ class Optimize:
 
 
     def objective(self, trial):
-        mean = 0
+        mean = []
         is_pruned = False
         nan_encountered = False
 
@@ -87,9 +87,10 @@ class Optimize:
         trial_agent = self.agent.create_agent(config)
 
         try:
-            for session in range(self.cfg.trial.n_epochs // self.cfg.trial.n_epochs_per_session):
-                mean = trial_agent.run(self.cfg.trial.n_epochs_per_session)
-                trial.report(mean, session)
+            for session in range(self.cfg.trial.n_steps // self.cfg.trial.n_steps_per_session):
+                mean_session = trial_agent.run(self.cfg.trial.n_steps_per_session)
+                mean.append(mean_session)
+                trial.report(mean_tmp, session)
                 if trial.should_prune():
                     is_pruned = True
                     break
@@ -108,7 +109,7 @@ class Optimize:
         if is_pruned:
             raise optuna.exceptions.TrialPruned()
 
-        return mean
+        return max(mean)
 
 
     def tune(self):

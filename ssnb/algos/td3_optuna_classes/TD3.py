@@ -30,7 +30,6 @@ class TD3:
     def __init__(self, cfg):
         torch.manual_seed(cfg.algorithm.seed)
         self.cfg = cfg
-        self.budget = cfg.algorithm.budget
         self.agent = {}
         self.env_agent = {}
         self.best_reward = -10e9
@@ -108,7 +107,7 @@ class TD3:
         return actor_loss.mean()
 
 
-    def run(self, n_epochs):
+    def run(self, budget):
         try:
             if self.policy_filename:
                 self.agent['eval_agent'].load_model(self.policy_filename)
@@ -129,13 +128,13 @@ class TD3:
             epoch = 0
             
             # Training loop
-            while self.budget > 0:
+            while budget > 0:
                 # Get the remaining training budget
-                if self.budget % self.cfg.algorithm.n_steps:
-                    n_steps = self.budget
+                if budget % self.cfg.algorithm.n_steps:
+                    n_steps = budget
                 else:
                     n_steps = self.cfg.algorithm.n_steps
-                self.budget += - n_steps
+                budget += - n_steps
                 
                 # Execute the agent in the workspace
                 if epoch > 0:

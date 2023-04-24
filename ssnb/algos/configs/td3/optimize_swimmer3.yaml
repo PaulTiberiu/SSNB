@@ -23,5 +23,5 @@
         timeout: 900
 
     trial:
-        n_epochs: 350000
-        n_epochs_per_session: 50000
+        n_steps: 200000
+        n_steps_per_session: 20000
