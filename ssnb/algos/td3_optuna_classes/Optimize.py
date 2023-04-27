@@ -90,7 +90,7 @@ class Optimize:
             for session in range(self.cfg.trial.n_steps // self.cfg.trial.n_steps_per_session):
                 mean_session = trial_agent.run(self.cfg.trial.n_steps_per_session)
                 mean.append(mean_session)
-                trial.report(mean_tmp, session)
+                trial.report(mean_session, session)
                 if trial.should_prune():
                     is_pruned = True
                     break
