@@ -86,21 +86,17 @@ class Optimize:
         config = self.sample_params(trial)
         trial_agent = self.agent.create_agent(config)
 
-        try:
-            for session in range(self.cfg.trial.n_steps // self.cfg.trial.n_steps_per_session):
-                mean_session = trial_agent.run(self.cfg.trial.n_steps_per_session)
-                mean.append(mean_session)
-                trial.report(mean_session, session)
-                if trial.should_prune():
-                    is_pruned = True
-                    break
+        for session in range(self.cfg.study.n_sessions):
+            mean_session = trial_agent.run(self.cfg.study.n_steps_per_trial // self.cfg.study.n_sessions)
 
-        except AssertionError:
-            # Sometimes, random hyperparams can generate NaN
-            nan_encountered = True
+            if mean_session is None:
+                raise KeyboardInterrupt
 
-        except KeyboardInterrupt:
-            print('Trial interrupted before terminating')
+            mean.append(mean_session)
+            trial.report(mean_session, session)
+            if trial.should_prune():
+                is_pruned = True
+                break
 
         # Tell the optimizer that the trial failed
         if nan_encountered:
@@ -109,20 +105,21 @@ class Optimize:
         if is_pruned:
             raise optuna.exceptions.TrialPruned()
 
+        if len(mean) == 0:
+            return None
+
         return max(mean)
 
 
     def tune(self):
-        sampler = TPESampler(n_startup_trials=self.cfg.study.n_startup_trials)
-        pruner = MedianPruner(n_startup_trials=self.cfg.study.n_startup_trials, n_warmup_steps=self.cfg.study.n_warmup_steps // 3)
-        study = optuna.create_study(sampler=sampler, pruner=pruner, direction="maximize")
+        study = optuna.create_study(direction="maximize")
 
         try:
-            study.optimize(self.objective, n_trials=self.cfg.study.n_trials, n_jobs=self.cfg.study.n_jobs, timeout=self.cfg.study.timeout)
+            study.optimize(self.objective, n_trials=self.cfg.study.n_trials)
 
         except KeyboardInterrupt:
-            print('\nStudy interrupted by user')
-            
+            pass
+
         print(f'Number of finished trials: {len(study.trials)}\n')
 
         trial = study.best_trial
