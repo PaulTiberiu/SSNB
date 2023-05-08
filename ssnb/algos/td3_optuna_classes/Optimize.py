@@ -74,6 +74,9 @@ class Optimize:
             suggested_value = self.parseSampling(trial, paramName, paramConfig)
             config.algorithm[paramName] = suggested_value
 
+        config.actor_optimizer.lr = trial.suggest_float('actor_optimizer_lr', 1e-4, 1e-2)
+        config.critic_optimizer.lr = trial.suggest_float('critic_optimizer_lr', 1e-4, 1e-2)
+        
         #config.algorithm.max_epochs = int(config.algorithm.n_timesteps // config.algorithm.n_steps) # to have a run of n_timesteps
         return config
 
