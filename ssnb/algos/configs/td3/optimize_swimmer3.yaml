@@ -3,17 +3,9 @@
         config: ../../../../configs/td3/td3_swimmer3.yaml
 
     params:
-        buffer_size:
-            min: 1e5
-            max: 1e6
-        batch_size:
-            min: 100
-            max: 300
-        tau_target:
-            min: 0.005
-            max: 0.05
-            type: float
-            log: True
+        architecture:
+            min: 4
+            max: 12
 
     study:
         n_trials: 100
