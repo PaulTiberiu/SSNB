@@ -126,11 +126,10 @@ class TD3:
             nb_steps = 0
             tmp_steps = 0
             epoch = 0
+            n_steps = self.cfg.algorithm.n_steps
             
             # Training loop
             while budget > 0:
-                n_steps = self.cfg.algorithm.n_steps
-                
                 # Get the remaining training budget
                 if budget < self.cfg.algorithm.n_steps:
                     n_steps = budget
