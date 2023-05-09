@@ -129,11 +129,11 @@ class TD3:
             
             # Training loop
             while budget > 0:
+                n_steps = self.cfg.algorithm.n_steps
+                
                 # Get the remaining training budget
-                if budget % self.cfg.algorithm.n_steps:
+                if budget < self.cfg.algorithm.n_steps:
                     n_steps = budget
-                else:
-                    n_steps = self.cfg.algorithm.n_steps
                 budget += - n_steps
                 
                 # Execute the agent in the workspace
