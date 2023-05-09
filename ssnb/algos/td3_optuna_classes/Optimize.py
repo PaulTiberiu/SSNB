@@ -46,6 +46,9 @@ class Optimize:
         elif paramName == 'action_noise':
             return trial.suggest_float('action_noise', paramConfig.min, paramConfig.max, log=True)
 
+        elif paramName == 'n_steps':
+            return trial.suggest_int('n_steps', paramConfig.min, paramConfig.max)
+
         elif paramName == 'architecture':
             ahs = 2 ** trial.suggest_int('actor_hidden_size', paramConfig.min, paramConfig.max)
             chs = 2 ** trial.suggest_int('critic_hidden_size', paramConfig.min, paramConfig.max)
@@ -75,10 +78,6 @@ class Optimize:
             elif paramName =='optimizer_lr':
                 config.actor_optimizer.lr = suggested_value['actor_optimizer_lr']
                 config.critic_optimizer.lr = suggested_value['critic_optimizer_lr']
-
-            elif paramName == 'batch_size':
-                config.algorithm[paramName] = suggested_value
-                config.algorithm['n_steps'] = suggested_value
 
             else:
                 config.algorithm[paramName] = suggested_value
