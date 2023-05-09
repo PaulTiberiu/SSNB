@@ -27,5 +27,5 @@
 
     study:
         n_trials: 100
-        n_steps_per_trial: 200000
-        n_sessions: 10
+        n_steps_per_trial: 250000
+        n_sessions: 5
