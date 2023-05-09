@@ -19,8 +19,8 @@
             min: 1e-4
             max: 1e-2
         tau_target:
-            min: 0.05
-            max: 0.005
+            min: 0.005
+            max: 0.05
 
     study:
         n_trials: 100

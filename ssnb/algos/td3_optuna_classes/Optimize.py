@@ -4,6 +4,7 @@ import torch
 import gym
 import hydra
 import optuna
+import matplotlib.pyplot as plt
 
 from omegaconf import OmegaConf
 
@@ -142,8 +143,7 @@ class Optimize:
         study.trials_dataframe().to_csv("study_results_td3_swimmer.csv")
         fig1 = plot_optimization_history(study)
         fig2 = plot_param_importances(study)
-        fig1.show()
-        fig2.show()
+        plt.show()
 
 
 def make_gym_env(env_name, xml_file):
