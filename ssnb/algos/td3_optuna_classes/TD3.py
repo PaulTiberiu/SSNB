@@ -134,7 +134,7 @@ class TD3:
                 # Get the remaining training budget
                 if budget < self.cfg.algorithm.n_steps:
                     n_steps = budget
-                budget += - n_steps
+                budget += - n_steps # we need to replace n_steps by the real number of steps done in the previous iteration (0 at the beginning), otherwise we're still losing steps
                 
                 # Execute the agent in the workspace
                 if epoch > 0:
