@@ -9,7 +9,7 @@ from omegaconf import OmegaConf
 
 from optuna.samplers import TPESampler
 from optuna.pruners import MedianPruner
-from optuna.visualization import plot_optimization_history, plot_param_importances
+from optuna.visualization.matplotlib import plot_optimization_history, plot_param_importances
 
 from bbrl.utils.chrono import Chrono
 
@@ -31,53 +31,57 @@ class Optimize:
     
     def parseSampling(self, trial, paramName, paramConfig):
         if paramName == 'discount_factor':
-            # discount factor between 0.9 and 0.9999
             return trial.suggest_float('discount_factor', paramConfig.min, paramConfig.max, log=True)
 
-        elif paramName == 'n_steps':
-            # n_steps 128, 256, 512, ...
-            return 2 ** trial.suggest_int('n_steps', paramConfig.min, paramConfig.max)
-
         elif paramName == 'buffer_size':
-            # buffer_size between 1e5 and 1e6
-            return trial.suggest_int('buffer_size', paramConfig.min, paramConfig.max)
+            return 10 ** trial.suggest_int('buffer_size', paramConfig.min, paramConfig.max)
 
         elif paramName == 'batch_size':
-            # batch_size between 100 and 300
-            return trial.suggest_int("batch_size", paramConfig.min, paramConfig.max)
+            return 10 ** trial.suggest_int('batch_size', paramConfig.min, paramConfig.max)
 
         elif paramName == 'tau_target':
-            # tau_target between 0.05 and 0.005
-            return trial.suggest_float("tau_target", paramConfig.min, paramConfig.max, log=True)
+            return trial.suggest_float('tau_target', paramConfig.min, paramConfig.max, log=True)
 
         elif paramName == 'action_noise':
-            # action_noise between 0 and 0.1
-            return trial.suggest_float("action_noise", paramConfig.min, paramConfig.max, log=True)
+            return trial.suggest_float('action_noise', paramConfig.min, paramConfig.max, log=True)
 
         elif paramName == 'architecture':
-            # actor hidden size between [32, 32] and [256, 256]
-            ahs = 2 ** trial.suggest_int("actor_hidden_size", paramConfig.min, paramConfig.max)
-            chs = 2 ** trial.suggest_int("critic_hidden_size", paramConfig.min, paramConfig.max)
+            ahs = 2 ** trial.suggest_int('actor_hidden_size', paramConfig.min, paramConfig.max)
+            chs = 2 ** trial.suggest_int('critic_hidden_size', paramConfig.min, paramConfig.max)
             return {'actor_hidden_size': [ahs, ahs], 'critic_hidden_size': [chs, chs]}
+
+        elif paramName == 'optimizer_lr':
+            alr = trial.suggest_float('actor_optimizer_lr', paramConfig.min, paramConfig.max)
+            clr = trial.suggest_float('critic_optimizer_lr', paramConfig.min, paramConfig.max)
+            return {'actor_optimizer_lr': alr, 'critic_optimizer_lr': clr}
 
         else:
             print(f'Hyperparameter {paramName} is not supported')
 
 
     def sample_params(self, trial):
-        # cf. actor_optimizer, critic_optimizer et architecture
         config = self.agent.cfg.copy()
 
         for paramName, paramConfig in self.cfg.params.items():
             #eval('suggested_value = trial.suggest_' + paramConfig.type + '("' + paramName + '", ' + paramConfig.min + ', ' + paramConfig.max + ', log=' + paramConfig.log + ')')
             #config.algorithm[paramName] = suggested_value
             suggested_value = self.parseSampling(trial, paramName, paramConfig)
-            config.algorithm[paramName] = suggested_value
+            
+            if paramName == 'architecture':
+                config.algorithm.architecture['actor_hidden_size'] = suggested_value['actor_hidden_size']
+                config.algorithm.architecture['critic_hidden_size'] = suggested_value['critic_hidden_size']
 
-        config.actor_optimizer.lr = trial.suggest_float('actor_optimizer_lr', 1e-4, 1e-2)
-        config.critic_optimizer.lr = trial.suggest_float('critic_optimizer_lr', 1e-4, 1e-2)
-        
-        #config.algorithm.max_epochs = int(config.algorithm.n_timesteps // config.algorithm.n_steps) # to have a run of n_timesteps
+            elif paramName =='optimizer_lr':
+                config.actor_optimizer.lr = suggested_value['actor_optimizer_lr']
+                config.critic_optimizer.lr = suggested_value['critic_optimizer_lr']
+
+            elif paramName == 'batch_size':
+                config.algorithm[paramName] = suggested_value
+                config.algorithm['n_steps'] = suggested_value
+
+            else:
+                config.algorithm[paramName] = suggested_value
+
         return config
 
 

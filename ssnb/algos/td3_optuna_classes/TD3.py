@@ -125,30 +125,28 @@ class TD3:
             actor_optimizer, critic_optimizer = self.setup_optimizers()
             nb_steps = 0
             tmp_steps = 0
-            epoch = 0
-            n_steps = self.cfg.algorithm.n_steps
             
             # Training loop
-            while budget > 0:
+            for epoch in range(cfg.algorithm.max_epochs):
                 # Get the remaining training budget
-                if budget < self.cfg.algorithm.n_steps:
-                    n_steps = budget
-                budget += - n_steps # we need to replace n_steps by the real number of steps done in the previous iteration (0 at the beginning), otherwise we're still losing steps
+                if budget <= 0:
+                    break
+                budget -= self.cfg.algorithm.n_steps # we need to replace n_steps by the real number of steps done in the previous iteration (0 at the beginning), otherwise we're still losing steps
                 
                 # Execute the agent in the workspace
                 if epoch > 0:
                     train_workspace.zero_grad()
                     train_workspace.copy_n_last_steps(1)
-                    self.agent['train_agent'](train_workspace, t=1, n_steps=n_steps)  # check if it should be n_steps=cfg.algorithm.n_steps - 1
+                    self.agent['train_agent'](train_workspace, t=1, n_steps=self.cfg.algorithm.n_steps)  # check if it should be n_steps=cfg.algorithm.n_steps - 1
 
                 else:
-                    self.agent['train_agent'](train_workspace, t=0, n_steps=n_steps)
+                    self.agent['train_agent'](train_workspace, t=0, n_steps=self.cfg.algorithm.n_steps)
 
                 transition_workspace = train_workspace.get_transitions()
                 action = transition_workspace["action"]
                 nb_steps += action[0].shape[0]
 
-                if epoch > 0 or n_steps > 1:
+                if epoch > 0 or self.cfg.algorithm.n_steps > 1:
                     rb.put(transition_workspace)
 
                 for _ in range(self.cfg.algorithm.n_updates):

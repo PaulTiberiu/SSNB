@@ -6,6 +6,21 @@
         architecture:
             min: 4
             max: 12
+        batch_size:
+            min: 6
+            max: 2
+        buffer_size:
+            min: 4
+            max: 8
+        discount_factor:
+            min: 0.9
+            max: 0.9999
+        optimizer_lr:
+            min: 1e-4
+            max: 1e-2
+        tau_target:
+            min: 0.05
+            max: 0.005
 
     study:
         n_trials: 100
