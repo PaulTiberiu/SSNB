@@ -7,8 +7,8 @@
             min: 4
             max: 12
         batch_size:
-            min: 6
-            max: 2
+            min: 2
+            max: 6
         buffer_size:
             min: 4
             max: 8
