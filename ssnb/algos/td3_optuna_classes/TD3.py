@@ -128,7 +128,7 @@ class TD3:
             
             # Training loop
             for epoch in range(self.cfg.algorithm.max_epochs):
-                # Get the remaining training budget
+                # Check the remaining training budget
                 if nb_steps >= budget:
                     break
                 
