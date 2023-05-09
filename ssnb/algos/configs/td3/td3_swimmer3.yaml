@@ -11,6 +11,7 @@
       seed: 2
       buffer_size: 1e6
       max_grad_norm: 0.5
+      max_epochs: 990000
       n_envs: 1
       n_steps: 1
       n_updates: 1
