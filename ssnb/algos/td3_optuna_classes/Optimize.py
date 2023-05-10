@@ -47,7 +47,7 @@ class Optimize:
             return trial.suggest_float('action_noise', paramConfig.min, paramConfig.max, log=True)
 
         elif paramName == 'n_steps':
-            return trial.suggest_int('n_steps', paramConfig.min, paramConfig.max)
+            return 10 ** trial.suggest_int('n_steps', paramConfig.min, paramConfig.max)
 
         elif paramName == 'architecture':
             ahs = 2 ** trial.suggest_int('actor_hidden_size', paramConfig.min, paramConfig.max)
