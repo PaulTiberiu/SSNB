@@ -54,10 +54,11 @@ class Optimize:
             chs = 2 ** trial.suggest_int('critic_hidden_size', paramConfig.min, paramConfig.max)
             return {'actor_hidden_size': [ahs, ahs], 'critic_hidden_size': [chs, chs]}
 
-        elif paramName == 'optimizer_lr':
-            alr = trial.suggest_float('actor_optimizer_lr', paramConfig.min, paramConfig.max)
-            clr = trial.suggest_float('critic_optimizer_lr', paramConfig.min, paramConfig.max)
-            return {'actor_optimizer_lr': alr, 'critic_optimizer_lr': clr}
+        elif paramName == 'actor_optimizer_lr':
+            return trial.suggest_float('actor_optimizer_lr', paramConfig.min, paramConfig.max)
+
+        elif paramName == 'critic_optimizer_lr':
+            return trial.suggest_float('critic_optimizer_lr', paramConfig.min, paramConfig.max)
 
         else:
             print(f'Hyperparameter {paramName} is not supported')
@@ -75,9 +76,11 @@ class Optimize:
                 config.algorithm.architecture['actor_hidden_size'] = suggested_value['actor_hidden_size']
                 config.algorithm.architecture['critic_hidden_size'] = suggested_value['critic_hidden_size']
 
-            elif paramName =='optimizer_lr':
-                config.actor_optimizer.lr = suggested_value['actor_optimizer_lr']
-                config.critic_optimizer.lr = suggested_value['critic_optimizer_lr']
+            elif paramName =='actor_optimizer_lr':
+                config.actor_optimizer.lr = suggested_value
+
+            elif paramName == 'critic_optimizer_lr':
+                config.critic_optimizer.lr = suggested_value
 
             else:
                 config.algorithm[paramName] = suggested_value

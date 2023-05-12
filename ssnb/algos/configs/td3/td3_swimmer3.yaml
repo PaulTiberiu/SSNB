@@ -8,25 +8,25 @@
       every_n_seconds: 10
 
     algorithm:
-      seed: 2
-      buffer_size: 1e6
+      seed: 1
+      buffer_size: 10e6
       max_grad_norm: 0.5
       max_epochs: 990000
       n_envs: 1
-      n_steps: 1
-      n_updates: 1
-      batch_size: 100
-      tau_target: 0.005
+      n_steps: 200
+      n_updates: 6
+      batch_size: 200
+      tau_target: 0.09
       eval_interval: 2500
       budget: 350000
-      discount_factor: 0.9999
+      discount_factor: 1.0
       learning_starts: 10000
       policy: 'MlpPolicy'
       gradient_steps: 1
       nb_evals: 1
       action_noise: 0.1
       architecture:
-        actor_hidden_size: [256, 256]
+        actor_hidden_size: [207, 207]
         critic_hidden_size: [256, 256]
 
     gym_env:
@@ -36,8 +36,8 @@
 
     actor_optimizer:
       classname: torch.optim.Adam
-      lr: 5e-4
+      lr: 0.0002
 
     critic_optimizer:
       classname: torch.optim.Adam
-      lr: 2e-3
+      lr: 0.001
