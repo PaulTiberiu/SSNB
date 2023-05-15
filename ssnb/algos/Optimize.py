@@ -49,10 +49,13 @@ class Optimize:
         elif paramName == 'n_steps':
             return 10 ** trial.suggest_int('n_steps', paramConfig.min, paramConfig.max)
 
-        elif paramName == 'architecture':
+        elif paramName == 'actor_hidden_size':
             ahs = trial.suggest_int('actor_hidden_size', paramConfig.min, paramConfig.max)
-            chs = trial.suggest_int('critic_hidden_size', paramConfig.min, paramConfig.max)
-            return {'actor_hidden_size': [ahs, ahs], 'critic_hidden_size': [chs, chs]}
+            return {'actor_hidden_size': [ahs, ahs]}
+        
+        elif paramName == 'critic_hidden_size':
+             chs = trial.suggest_int('critic_hidden_size', paramConfig.min, paramConfig.max)
+             return {'critic_hidden_size': [chs, chs]}
 
         elif paramName == 'actor_optimizer_lr':
             return trial.suggest_float('actor_optimizer_lr', paramConfig.min, paramConfig.max)
@@ -72,8 +75,10 @@ class Optimize:
             #config.algorithm[paramName] = suggested_value
             suggested_value = self.parseSampling(trial, paramName, paramConfig)
             
-            if paramName == 'architecture':
+            if paramName == 'actor_hidden_size':
                 config.algorithm.architecture['actor_hidden_size'] = suggested_value['actor_hidden_size']
+            
+            elif paramName == 'critic_hidden_size':
                 config.algorithm.architecture['critic_hidden_size'] = suggested_value['critic_hidden_size']
 
             elif paramName =='actor_optimizer_lr':
@@ -95,9 +100,10 @@ class Optimize:
 
         config = self.sample_params(trial)
         trial_agent = self.agent.create_agent(config)
-
+        
+        trial_agent.cfg.algorithm.budget = trial_agent.cfg.algorithm.budget // self.cfg.study.n_sessions
         for session in range(self.cfg.study.n_sessions):
-            mean_session = trial_agent.run(self.cfg.study.n_steps_per_trial // self.cfg.study.n_sessions)
+            mean_session = trial_agent.run()
 
             if mean_session is None:
                 raise KeyboardInterrupt
