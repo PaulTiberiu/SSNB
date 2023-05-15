@@ -154,8 +154,8 @@ def make_gym_env(env_name, xml_file):
 
 
 @hydra.main(
-    config_path="../configs/td3/",
-    config_name="optimize_swimmer3.yaml",
+    config_path="../configs/",
+    config_name="optimize_swimmer.yaml",
 )
 
 def main(cfg):

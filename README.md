@@ -19,9 +19,14 @@ Right now, only two algorithms are available: `TD3` and `DDPG`. Their scripts ca
 
 ### Run your own simulation
 
-In order to run a `Swimmer` environment, you only need to execute the algorithms' scripts mentionned beforehand. You can change the number of joints and bodies by changing the `config_name` variable located near the end of the scripts. For example, in `td3.py` you can replace the default `config_name` by `"td3_swimmer6.yaml"` in order to get a `Swimmer` environment with 6 bodies.
+In order to run a `Swimmer` environment, you only need to execute the algorithms' scripts mentionned beforehand: `python TD3.py`. You can change the number of joints and bodies by changing the `config_name` variable located near the end of the scripts. For example, in `td3.py` you can replace the default `config_name` by `"td3_swimmer6.yaml"` in order to get a `Swimmer` environment with 6 bodies.
 
 If you wish to view your environment, you can set the `render_agents` parameter to `True` in the related config file.
+
+
+### Hyperparameters tuning with Optuna
+
+`SSNB` also provides a way to get your own hyperparameters with the help of Optuna. In order to execute the optimization script, you need to run `python Optimize.py`. Also, you can change the number of bodies, the span of a trial, or the hyperparameters you want to tune in the config file: `optimize_swimmer.yaml`.
 
 
 ## Install SSNB
@@ -73,7 +78,7 @@ sudo apt-get install patchelf
 
 Finally, type the following command in `SSNB`'s repository:
 ```
-sudo pip install -e .
+pip install .
 ```
 
 
