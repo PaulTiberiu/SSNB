@@ -14,9 +14,9 @@ from optuna.visualization.matplotlib import plot_optimization_history, plot_para
 
 from bbrl.utils.chrono import Chrono
 
-from ssnb.algos.td3_optuna_classes.TD3 import TD3
+from ssnb.algos.td3 import TD3
 
-assets_path = os.getcwd() + '/../../assets/'
+assets_path = os.getcwd() + '/../assets/'
 
 
 class Optimize:
