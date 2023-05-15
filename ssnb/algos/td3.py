@@ -107,7 +107,7 @@ class TD3:
         return actor_loss.mean()
 
 
-    def run(self, budget):
+    def run(self):
         try:
             if self.policy_filename:
                 self.agent['eval_agent'].load_model(self.policy_filename)
@@ -125,11 +125,16 @@ class TD3:
             actor_optimizer, critic_optimizer = self.setup_optimizers()
             nb_steps = 0
             tmp_steps = 0
+            budget = self.cfg.algorithm.budget
+            n_steps = self.cfg.algorithm.n_steps
             
             # Training loop
             for epoch in range(self.cfg.algorithm.max_epochs):
                 # Check the remaining training budget
-                if nb_steps >= budget:
+                if budget - nb_steps < n_steps :
+                    n_steps = budget - nb_steps
+                
+                if budget <= 0:
                     break
                 
                 # Execute the agent in the workspace
@@ -274,7 +279,7 @@ def make_gym_env(env_name, xml_file):
 def main(cfg):
     chrono = Chrono()
     a = TD3(cfg)
-    a.run(250000)
+    a.run()
     chrono.stop()
 
 if __name__ == "__main__":
