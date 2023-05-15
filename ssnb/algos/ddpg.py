@@ -261,7 +261,7 @@ def make_gym_env(env_name, xml_file):
 def main(cfg):
     chrono = Chrono()
     a = DDPG(cfg)
-    a.run(250000)
+    a.run()
     chrono.stop()
 
 
