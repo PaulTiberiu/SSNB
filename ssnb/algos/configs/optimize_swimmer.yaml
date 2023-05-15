@@ -3,7 +3,10 @@
         config: ../../../configs/td3/td3_swimmer3.yaml
 
     params:
-        architecture:
+        actor_hidden_size:
+            min: 128
+            max: 1024
+        critic_hidden_size:
             min: 128
             max: 1024
         critic_optimizer_lr:
@@ -12,5 +15,4 @@
 
     study:
         n_trials: 100
-        n_steps_per_trial: 250000
         n_sessions: 5
