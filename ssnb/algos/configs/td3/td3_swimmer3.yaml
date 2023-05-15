@@ -9,7 +9,7 @@
 
     algorithm:
       seed: 2
-      buffer_size: 10e7
+      buffer_size: 1e7
       max_grad_norm: 0.5
       max_epochs: 990000
       n_envs: 1
