@@ -4,8 +4,8 @@
 
     params:
         architecture:
-            min: 4
-            max: 12
+            min: 128
+            max: 1024
         critic_optimizer_lr:
             min: 1e-4
             max: 1e-2

@@ -50,8 +50,8 @@ class Optimize:
             return 10 ** trial.suggest_int('n_steps', paramConfig.min, paramConfig.max)
 
         elif paramName == 'architecture':
-            ahs = 2 ** trial.suggest_int('actor_hidden_size', paramConfig.min, paramConfig.max)
-            chs = 2 ** trial.suggest_int('critic_hidden_size', paramConfig.min, paramConfig.max)
+            ahs = trial.suggest_int('actor_hidden_size', paramConfig.min, paramConfig.max)
+            chs = trial.suggest_int('critic_hidden_size', paramConfig.min, paramConfig.max)
             return {'actor_hidden_size': [ahs, ahs], 'critic_hidden_size': [chs, chs]}
 
         elif paramName == 'actor_optimizer_lr':
