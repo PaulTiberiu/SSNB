@@ -250,9 +250,7 @@ class TD3:
                         )
 
                         self.agent['eval_agent'].save_model(filename)
-                        
-                epoch += 1
-            
+
             if not self.policy_filename:
                 self.policy_filename = "./td3_agent/"  + self.cfg.gym_env.env_name + "#td3#T1_T2#" + str(mean.item()) + ".agt"
 
@@ -276,8 +274,7 @@ def make_gym_env(env_name, xml_file):
 def main(cfg):
     chrono = Chrono()
     a = TD3(cfg)
-    a.run(10000)
-    a.run(10000)
+    a.run(250000)
     chrono.stop()
 
 if __name__ == "__main__":
