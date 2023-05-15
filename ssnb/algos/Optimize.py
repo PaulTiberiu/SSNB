@@ -24,7 +24,7 @@ class Optimize:
         self.cfg = cfg
         agent_cfg = OmegaConf.load(cfg.agent.config)
 
-        if cfg.agent.classname == 'ssnb.algos.TD3.TD3':
+        if cfg.agent.classname == 'ssnb.algos.td3.TD3':
             self.agent = TD3(agent_cfg)
 
         else:
