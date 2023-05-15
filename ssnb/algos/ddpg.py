@@ -133,7 +133,7 @@ class DDPG:
                 if epoch > 0:
                     train_workspace.zero_grad()
                     train_workspace.copy_n_last_steps(1)
-                    self.agent['train_agent'](train_workspace, t=1, n_steps=self.cfg.algorithm.n_steps - 1)
+                    self.agent['train_agent'](train_workspace, t=1, n_steps=self.cfg.algorithm.n_steps)
 
                 else:
                     self.agent['train_agent'](train_workspace, t=0, n_steps=self.cfg.algorithm.n_steps)
