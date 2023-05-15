@@ -134,7 +134,7 @@ class TD3:
                 if budget - nb_steps < n_steps :
                     n_steps = budget - nb_steps
                 
-                if budget <= 0:
+                if budget <= nb_steps:
                     break
                 
                 # Execute the agent in the workspace
