@@ -26,7 +26,7 @@ If you wish to view your environment, you can set the `render_agents` parameter 
 
 ### Hyperparameters tuning with Optuna
 
-`SSNB` also provides a way to get your own hyperparameters with the help of Optuna. In order to execute the optimization script, you need to run `python Optimize.py`. Also, you can change the number of bodies, the span of a trial, or the hyperparameters you want to tune in the config file: `optimize_swimmer.yaml`.
+`SSNB` also provides a way to get your own hyperparameters with the help of Optuna. In order to execute the optimization script, you need to run `python optimize.py`. Also, you can change the number of bodies, the span of a trial, or the hyperparameters you want to tune in the config file: `optimize_swimmer.yaml`.
 
 
 ## Install SSNB
