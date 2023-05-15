@@ -23,7 +23,7 @@ from ssnb.models.exploration_agents import AddGaussianNoise
 from ssnb.models.loggers import Logger, RewardLogger
 from ssnb.models.shared_models import soft_update_params
 
-assets_path = os.getcwd() + '/../../assets/'
+assets_path = os.getcwd() + '/../assets/'
 
 
 class TD3:
