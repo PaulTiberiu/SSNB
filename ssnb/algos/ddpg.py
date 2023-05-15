@@ -104,7 +104,7 @@ class DDPG:
         return critic_loss
 
 
-    def run(self, budget):
+    def run(self):
         try:
             if self.policy_filename:
                 self.agent['eval_agent'].load_model(self.policy_filename)
@@ -122,21 +122,26 @@ class DDPG:
             actor_optimizer, critic_optimizer = self.setup_optimizers(cfg)
             nb_steps = 0
             tmp_steps = 0
+            budget = self.cfg.algorithm.budget
+            n_steps = self.cfg.algorithm.n_steps
 
             # Training loop
             for epoch in range(self.cfg.algorithm.max_epochs):
                 # Check the remaining training budget
-                if nb_steps >= budget:
+                if budget - nb_steps < n_steps:
+                    n_steps = budget - nb_steps
+                
+                if budget <= 0:
                     break
 
                 # Execute the agent in the workspace
                 if epoch > 0:
                     train_workspace.zero_grad()
                     train_workspace.copy_n_last_steps(1)
-                    self.agent['train_agent'](train_workspace, t=1, n_steps=self.cfg.algorithm.n_steps)
+                    self.agent['train_agent'](train_workspace, t=1, n_steps=n_steps)
 
                 else:
-                    self.agent['train_agent'](train_workspace, t=0, n_steps=self.cfg.algorithm.n_steps)
+                    self.agent['train_agent'](train_workspace, t=0, n_steps=n_steps)
 
                 transition_workspace = train_workspace.get_transitions()
                 action = transition_workspace["action"]
