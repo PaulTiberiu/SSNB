@@ -9,7 +9,6 @@ import matplotlib.pyplot as plt
 from omegaconf import OmegaConf
 
 from optuna.samplers import TPESampler
-from optuna.pruners import MedianPruner
 from optuna.visualization.matplotlib import plot_optimization_history, plot_param_importances
 
 from bbrl.utils.chrono import Chrono
@@ -116,9 +115,7 @@ class Optimize:
 
     def tune(self):
         study = optuna.create_study(
-            direction="maximize",
-            pruner=optuna.pruners.HyperbandPruner(
-                min_resource=25000, reduction_factor=2)
+            direction="maximize"
             )
 
         try:
