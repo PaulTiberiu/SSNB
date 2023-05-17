@@ -1,0 +1,17 @@
+    agent:
+        classname: ssnb.algos.TD3.TD3
+        config: ../../../../configs/td3/td3_swimmer3.yaml
+
+    params:
+        actor_hidden_size:
+            min: 170
+            max: 360
+        critic_hidden_size:
+            min: 250
+            max: 520
+        critic_optimizer_lr:
+            min: 1e-3
+            max: 3e-3
+
+    study:
+        n_trials: 140
