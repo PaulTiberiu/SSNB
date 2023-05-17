@@ -1,6 +1,6 @@
     agent:
         classname: ssnb.algos.TD3.TD3
-        config: ../../../../configs/td3/td3_swimmer3.yaml
+        config: ../../../../study/configs/td3_swimmer.yaml
 
     params:
         actor_hidden_size:
