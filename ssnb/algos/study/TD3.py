@@ -265,18 +265,20 @@ class TD3:
                         
                 epoch+= 1
             
+            np.asarray(mean)
+            
             if not self.policy_filename:
                 self.policy_filename = (
                     "./td3_agent/"  
                     + self.cfg.gym_env.env_name 
                     + "#td3#T1_T2#" 
-                    + str(max(mean).item()) 
+                    + str(np.mean(mean)) 
                     + ".agt"
                 )
 
             self.agent['train_agent'].save_model(self.policy_filename)
             return (
-                max(mean), 
+                np.mean(mean), 
                 is_pruned
             )
             
