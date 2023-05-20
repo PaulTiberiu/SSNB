@@ -97,7 +97,7 @@ class Optimize:
     
 
     def generate(self):
-        self.seeds.append(int(time.time())
+        self.seeds.append(int(time.time()))
         np.random.seed(self.seeds[0])
         
         for i in range(self.cfg.study.nb_seeds):
