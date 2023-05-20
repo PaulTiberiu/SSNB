@@ -16,7 +16,7 @@ from bbrl.utils.chrono import Chrono
 from ssnb.algos.td3 import TD3
 from ssnb.algos.ddpg import DDPG
 
-assets_path = os.getcwd() + '/../../assets/'
+assets_path = os.getcwd() + '/../assets/'
 
 class Optimize:
     def __init__(self, cfg):
