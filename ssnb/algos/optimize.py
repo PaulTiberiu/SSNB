@@ -111,7 +111,7 @@ class Optimize:
         config = self.sample_params(trial)
         mean_list = []
         
-        print(f'\nTrial {trial.number} starting')
+        print(f'\n=== Trial {trial.number} starting ===')
 
         for seed in range(1, len(self.seeds)):
             config.algorithm.seed = self.seeds[seed]
@@ -139,13 +139,10 @@ class Optimize:
 
     def tune(self):
         # Create study
-        study = optuna.create_study(
-            direction="maximize"
-            )
+        study = optuna.create_study(direction="maximize")
         
         # Generate seeds
-        self.generate() 
-        
+        self.generate()
         print(f'\nSeeds used for this study: {self.seeds[1:]}\nGenerated with seed: {self.seeds[0]}\n')
 
         try:
@@ -166,7 +163,7 @@ class Optimize:
             print(f"{key}: {value}\t")
 
         # Write report
-        study.trials_dataframe().to_csv("study_results_" + self.cfg.classname + "_swimmer.csv")
+        study.trials_dataframe().to_csv("study_results_" + self.cfg.agent.classname + "_swimmer.csv")
         fig1 = plot_optimization_history(study)
         fig2 = plot_param_importances(study)
         plt.show()
