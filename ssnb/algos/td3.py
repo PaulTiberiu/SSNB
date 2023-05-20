@@ -23,7 +23,7 @@ from ssnb.models.exploration_agents import AddGaussianNoise
 from ssnb.models.loggers import Logger, RewardLogger
 from ssnb.models.shared_models import soft_update_params
 
-assets_path = os.getcwd() + '/../../assets/'
+assets_path = os.getcwd() + '../assets/'
 
 class TD3:
     def __init__(self, cfg):
@@ -289,7 +289,7 @@ def make_gym_env(env_name, xml_file):
     return gym.make(env_name, xml_file=xml_file)
 
 @hydra.main(
-    config_path="../configs/td3/",
+    config_path="./configs/td3/",
     config_name="td3_swimmer3.yaml",
 )
 
