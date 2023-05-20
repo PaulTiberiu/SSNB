@@ -4,6 +4,7 @@ import torch
 import gym
 import hydra
 import optuna
+import time
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -22,6 +23,7 @@ assets_path = os.getcwd() + '/../assets/'
 class Optimize:
     def __init__(self, cfg):
         self.cfg = cfg
+        self.seeds = []
         agent_cfg = OmegaConf.load(cfg.agent.config)
 
         if cfg.agent.classname:
@@ -92,28 +94,36 @@ class Optimize:
 
         return config
 
-
+    def generate(self):
+        np.random.seed(int(time.time()))
+        
+        for i in range(self.cfg.study.nb_seeds):
+            random = np.random.randint(1, np.iinfo(np.int32).max)
+            self.seeds.append(random)
+    
     def objective(self, trial):
         nan_encountered = False
 
         config = self.sample_params(trial)
         mean_list = np.Array()
 
-        for seed in range(1, 11):
-            config.algorithm.seed = seed
+        for seed in range(len(self.seeds)):
+            config.algorithm.seed = self.seeds[seed]
             trial_agent = self.agent.create_agent(config)
-            print(f'Trial {trial.number} in progress with seed {seed}')
+            print(f'Trial {trial.number} in progress with seed {self.seeds[seed]}')
 
-            mean, is_pruned = trial_agent.run(trial)
-
+            mean = trial_agent.run()
+            
             if mean is None:
                 raise KeyboardInterrupt
+            
+            trial.report(mean, seed)
 
             # Tell the optimizer that the trial failed
             if nan_encountered:
                 return float("nan")
 
-            if is_pruned:
+            if trial.should_prune():
                 raise optuna.exceptions.TrialPruned()
 
             mean_list.append(mean)
@@ -122,6 +132,11 @@ class Optimize:
 
 
     def tune(self):
+        # Generate seeds
+        self.generate() 
+        
+        print(f'Seeds used for this study: {self.seeds}\n')
+            
         study = optuna.create_study(
             direction="maximize"
             )
