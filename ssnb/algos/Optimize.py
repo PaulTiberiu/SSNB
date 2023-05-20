@@ -70,7 +70,7 @@ class Optimize:
         config = self.agent.cfg.copy()
 
         for paramName, paramConfig in self.cfg.params.items():
-            #eval('suggested_value = trial.suggest_' + paramConfig.type + '("' + paramName + '", ' + paramConfig.min + ', ' + paramConfig.max + ', log=' + paramConfig.log + ')')
+            #exec('suggested_value = trial.suggest_' + paramConfig.type + '("' + paramName + '", ' + paramConfig.min + ', ' + paramConfig.max + ', log=' + paramConfig.log + ')')
             #config.algorithm[paramName] = suggested_value
             suggested_value = self.parseSampling(trial, paramName, paramConfig)
             
