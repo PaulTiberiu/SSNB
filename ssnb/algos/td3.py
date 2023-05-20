@@ -238,7 +238,7 @@ class TD3:
                     print(f"nb_steps: {nb_steps}, reward: {mean[-1]}")
                     reward_logger.add(nb_steps, mean[-1])
                     
-                    if self.cfg.optimize:
+                    if trial:
                         trial.report(mean[-1], epoch)
                     
                         if trial.should_prune():

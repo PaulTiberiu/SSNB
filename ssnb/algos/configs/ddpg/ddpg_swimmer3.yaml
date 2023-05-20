@@ -1,7 +1,6 @@
     render_agents: False
     save_best: True
-    optimize: False
-
+    
     logger:
       classname: bbrl.utils.logger.TFLogger
       log_dir: ./ddpg_logs/

@@ -1,6 +1,5 @@
     render_agents: False
     save_best: True
-    optimize: True
 
     logger:
       classname: bbrl.utils.logger.TFLogger
