@@ -30,7 +30,7 @@
     gym_env:
       classname: __main__.make_gym_env
       env_name: Swimmer-v3
-      xml_file: swimmer4.xml
+      xml_file: swimmer3.xml
 
     actor_optimizer:
       classname: torch.optim.Adam
