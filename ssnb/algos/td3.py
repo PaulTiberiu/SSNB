@@ -106,7 +106,7 @@ class TD3:
         return actor_loss.mean()
 
 
-    def run(self, trial=None):
+    def run(self):
         try:
             if self.policy_filename:
                 self.agent['eval_agent'].load_model(self.policy_filename)
@@ -125,7 +125,6 @@ class TD3:
             nb_steps = 0
             tmp_steps = 0
             epoch = 0
-            is_pruned = False
             budget = self.cfg.algorithm.budget
             n_steps = self.cfg.algorithm.n_steps
             mean = []
@@ -237,13 +236,6 @@ class TD3:
                     logger.add_log("reward", mean[-1], nb_steps)
                     print(f"nb_steps: {nb_steps}, reward: {mean[-1]}")
                     reward_logger.add(nb_steps, mean[-1])
-                    
-                    if trial:
-                        trial.report(mean[-1], epoch)
-                    
-                        if trial.should_prune():
-                            is_pruned = True
-                            break
                             
                     if self.cfg.save_best and mean[-1] > self.best_reward:
                         self.best_reward = mean[-1]
@@ -274,10 +266,7 @@ class TD3:
                 )
 
             self.agent['train_agent'].save_model(self.policy_filename)
-            return (
-                np.mean(mean), 
-                is_pruned
-            )
+            return np.mean(mean)
             
         except KeyboardInterrupt:
             print('\nAlgorithm interrupted by user before terminating')
