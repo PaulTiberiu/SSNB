@@ -139,7 +139,7 @@ class Optimize:
         # Generate seeds
         self.generate() 
         
-        print(f'Seeds used for this study: {self.seeds[1:}\nGenerated with seed: {self.seeds[0]}\n')
+        print(f'Seeds used for this study: {self.seeds[1:]}\nGenerated with seed: {self.seeds[0]}\n')
             
         study = optuna.create_study(
             direction="maximize"
