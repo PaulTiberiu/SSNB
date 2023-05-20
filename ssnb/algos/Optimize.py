@@ -13,19 +13,19 @@ from optuna.visualization.matplotlib import plot_optimization_history, plot_para
 
 from bbrl.utils.chrono import Chrono
 
-from ssnb.algos.study.TD3 import TD3
+from ssnb.algos.td3 import TD3
+from ssnb.algos.ddpg import DDPG
 
 assets_path = os.getcwd() + '/../../assets/'
-
 
 class Optimize:
     def __init__(self, cfg):
         self.cfg = cfg
         agent_cfg = OmegaConf.load(cfg.agent.config)
 
-        if cfg.agent.classname == 'ssnb.algos.TD3.TD3':
-            self.agent = TD3(agent_cfg)
-
+        if cfg.agent.classname:
+            eval("self.agent = " + cfg.agent.classname + "(agent_cfg)")
+        
         else:
             self.agent = None    
     
@@ -136,7 +136,7 @@ class Optimize:
             print(f"{key}: {value}\t")
 
         # Write report
-        study.trials_dataframe().to_csv("study_results_td3_swimmer.csv")
+        study.trials_dataframe().to_csv("study_results_" + self.cfg.classname + "_swimmer.csv")
         fig1 = plot_optimization_history(study)
         fig2 = plot_param_importances(study)
         plt.show()
