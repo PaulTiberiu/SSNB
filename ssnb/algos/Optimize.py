@@ -9,14 +9,13 @@ import matplotlib.pyplot as plt
 from omegaconf import OmegaConf
 
 from optuna.samplers import TPESampler
-from optuna.pruners import MedianPruner
 from optuna.visualization.matplotlib import plot_optimization_history, plot_param_importances
 
 from bbrl.utils.chrono import Chrono
 
-from ssnb.algos.td3 import TD3
+from ssnb.algos.study.TD3 import TD3
 
-assets_path = os.getcwd() + '/../assets/'
+assets_path = os.getcwd() + '/../../assets/'
 
 
 class Optimize:
@@ -24,7 +23,7 @@ class Optimize:
         self.cfg = cfg
         agent_cfg = OmegaConf.load(cfg.agent.config)
 
-        if cfg.agent.classname == 'ssnb.algos.td3.TD3':
+        if cfg.agent.classname == 'ssnb.algos.TD3.TD3':
             self.agent = TD3(agent_cfg)
 
         else:
@@ -54,8 +53,8 @@ class Optimize:
             return {'actor_hidden_size': [ahs, ahs]}
         
         elif paramName == 'critic_hidden_size':
-             chs = trial.suggest_int('critic_hidden_size', paramConfig.min, paramConfig.max)
-             return {'critic_hidden_size': [chs, chs]}
+            chs = trial.suggest_int('critic_hidden_size', paramConfig.min, paramConfig.max)
+            return {'critic_hidden_size': [chs, chs]}
 
         elif paramName == 'actor_optimizer_lr':
             return trial.suggest_float('actor_optimizer_lr', paramConfig.min, paramConfig.max)
@@ -77,7 +76,7 @@ class Optimize:
             
             if paramName == 'actor_hidden_size':
                 config.algorithm.architecture['actor_hidden_size'] = suggested_value['actor_hidden_size']
-            
+                
             elif paramName == 'critic_hidden_size':
                 config.algorithm.architecture['critic_hidden_size'] = suggested_value['critic_hidden_size']
 
@@ -94,25 +93,15 @@ class Optimize:
 
 
     def objective(self, trial):
-        mean = []
-        is_pruned = False
         nan_encountered = False
 
         config = self.sample_params(trial)
         trial_agent = self.agent.create_agent(config)
-        
-        trial_agent.cfg.algorithm.budget = trial_agent.cfg.algorithm.budget // self.cfg.study.n_sessions
-        for session in range(self.cfg.study.n_sessions):
-            mean_session = trial_agent.run()
 
-            if mean_session is None:
-                raise KeyboardInterrupt
+        mean, is_pruned = trial_agent.run(trial)
 
-            mean.append(mean_session)
-            trial.report(mean_session, session)
-            if trial.should_prune():
-                is_pruned = True
-                break
+        if mean is None:
+            raise KeyboardInterrupt
 
         # Tell the optimizer that the trial failed
         if nan_encountered:
@@ -121,14 +110,13 @@ class Optimize:
         if is_pruned:
             raise optuna.exceptions.TrialPruned()
 
-        if len(mean) == 0:
-            return None
-
-        return max(mean)
+        return mean
 
 
     def tune(self):
-        study = optuna.create_study(direction="maximize")
+        study = optuna.create_study(
+            direction="maximize"
+            )
 
         try:
             study.optimize(self.objective, n_trials=self.cfg.study.n_trials)
@@ -152,7 +140,6 @@ class Optimize:
         fig1 = plot_optimization_history(study)
         fig2 = plot_param_importances(study)
         plt.show()
-
 
 def make_gym_env(env_name, xml_file):
     xml_file = assets_path + xml_file
