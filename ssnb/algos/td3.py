@@ -262,7 +262,7 @@ class TD3:
 
                         self.agent['eval_agent'].save_model(filename)
                         
-                epoch+= 1
+                epoch += 1
             
             if not self.policy_filename:
                 self.policy_filename = (
