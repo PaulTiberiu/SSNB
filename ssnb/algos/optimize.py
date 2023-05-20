@@ -97,7 +97,8 @@ class Optimize:
     
 
     def generate(self):
-        np.random.seed(int(time.time()))
+        self.seeds.append(int(time.time())
+        np.random.seed(self.seeds[0])
         
         for i in range(self.cfg.study.nb_seeds):
             random = np.random.randint(1, np.iinfo(np.int32).max)
@@ -110,7 +111,7 @@ class Optimize:
         config = self.sample_params(trial)
         mean_list = np.Array()
 
-        for seed in range(len(self.seeds)):
+        for seed in range(1, len(self.seeds)):
             config.algorithm.seed = self.seeds[seed]
             trial_agent = self.agent.create_agent(config)
             print(f'Trial {trial.number} in progress with seed {self.seeds[seed]}')
@@ -138,7 +139,7 @@ class Optimize:
         # Generate seeds
         self.generate() 
         
-        print(f'Seeds used for this study: {self.seeds}\n')
+        print(f'Seeds used for this study: {self.seeds[1:}\nGenerated with seed: {self.seeds[0]}')
             
         study = optuna.create_study(
             direction="maximize"
