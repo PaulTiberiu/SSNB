@@ -25,7 +25,6 @@ from ssnb.models.shared_models import soft_update_params
 
 assets_path = os.getcwd() + '/../../assets/'
 
-
 class TD3:
     def __init__(self, cfg):
         torch.manual_seed(cfg.algorithm.seed)
