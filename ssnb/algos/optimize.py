@@ -114,7 +114,7 @@ class Optimize:
         for seed in range(1, len(self.seeds)):
             config.algorithm.seed = self.seeds[seed]
             trial_agent = self.agent.create_agent(config)
-            print(f'Trial {trial.number} in progress with seed {self.seeds[seed]}')
+            print(f'Trial {trial.number} in progress with seed {self.seeds[seed]}\n')
 
             mean = trial_agent.run()
             
@@ -139,7 +139,7 @@ class Optimize:
         # Generate seeds
         self.generate() 
         
-        print(f'Seeds used for this study: {self.seeds[1:}\nGenerated with seed: {self.seeds[0]}')
+        print(f'Seeds used for this study: {self.seeds[1:}\nGenerated with seed: {self.seeds[0]}\n')
             
         study = optuna.create_study(
             direction="maximize"
