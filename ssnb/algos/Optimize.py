@@ -24,7 +24,7 @@ class Optimize:
         agent_cfg = OmegaConf.load(cfg.agent.config)
 
         if cfg.agent.classname:
-            eval("self.agent = " + cfg.agent.classname + "(agent_cfg)")
+            exec("self.agent = " + cfg.agent.classname + "(agent_cfg)")
         
         else:
             self.agent = None    
