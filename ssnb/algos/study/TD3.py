@@ -265,8 +265,6 @@ class TD3:
                         
                 epoch+= 1
             
-            np.asarray(mean)
-            
             if not self.policy_filename:
                 self.policy_filename = (
                     "./td3_agent/"  
