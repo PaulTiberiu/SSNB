@@ -109,12 +109,12 @@ class Optimize:
         nan_encountered = False
 
         config = self.sample_params(trial)
-        mean_list = np.Array()
+        mean_list = []
 
         for seed in range(1, len(self.seeds)):
             config.algorithm.seed = self.seeds[seed]
             trial_agent = self.agent.create_agent(config)
-            print(f'Trial {trial.number} in progress with seed {self.seeds[seed]}\n')
+            print(f'\n=== Trial {trial.number} in progress with seed {self.seeds[seed]} ===\n')
 
             mean = trial_agent.run()
             
@@ -138,12 +138,9 @@ class Optimize:
     def tune(self):
         # Generate seeds
         self.generate() 
-        
         print(f'Seeds used for this study: {self.seeds[1:]}\nGenerated with seed: {self.seeds[0]}\n')
             
-        study = optuna.create_study(
-            direction="maximize"
-            )
+        study = optuna.create_study(direction="maximize")
 
         try:
             study.optimize(self.objective, n_trials=self.cfg.study.n_trials)
@@ -163,7 +160,7 @@ class Optimize:
             print(f"{key}: {value}\t")
 
         # Write report
-        study.trials_dataframe().to_csv("study_results_" + self.cfg.classname + "_swimmer.csv")
+        study.trials_dataframe().to_csv("study_results_" + self.cfg.agent.classname + "_swimmer.csv")
         fig1 = plot_optimization_history(study)
         fig2 = plot_param_importances(study)
         plt.show()
