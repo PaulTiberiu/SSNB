@@ -31,6 +31,7 @@ class Optimize:
         
         else:
             self.agent = None    
+            
     
     def parseSampling(self, trial, paramName, paramConfig):
         if paramName == 'discount_factor':
@@ -93,6 +94,7 @@ class Optimize:
                 config.algorithm[paramName] = suggested_value
 
         return config
+    
 
     def generate(self):
         np.random.seed(int(time.time()))
@@ -100,6 +102,7 @@ class Optimize:
         for i in range(self.cfg.study.nb_seeds):
             random = np.random.randint(1, np.iinfo(np.int32).max)
             self.seeds.append(random)
+            
     
     def objective(self, trial):
         nan_encountered = False
@@ -163,6 +166,7 @@ class Optimize:
         fig1 = plot_optimization_history(study)
         fig2 = plot_param_importances(study)
         plt.show()
+        
 
 def make_gym_env(env_name, xml_file):
     xml_file = assets_path + xml_file
@@ -173,6 +177,7 @@ def make_gym_env(env_name, xml_file):
     config_path="./configs/",
     config_name="optimize_swimmer.yaml",
 )
+
 
 def main(cfg):
     chrono = Chrono()
