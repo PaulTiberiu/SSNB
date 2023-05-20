@@ -104,7 +104,7 @@ class DDPG:
         return critic_loss
 
 
-    def run(self, trial):
+    def run(self, trial=None):
         try:
             if self.policy_filename:
                 self.agent['eval_agent'].load_model(self.policy_filename)
@@ -279,7 +279,7 @@ def make_gym_env(env_name, xml_file):
 def main(cfg):
     chrono = Chrono()
     a = DDPG(cfg)
-    a.run(None)
+    a.run()
     chrono.stop()
 
 

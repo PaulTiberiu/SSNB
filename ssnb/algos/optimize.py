@@ -5,6 +5,7 @@ import gym
 import hydra
 import optuna
 import matplotlib.pyplot as plt
+import numpy as np
 
 from omegaconf import OmegaConf
 
@@ -96,21 +97,28 @@ class Optimize:
         nan_encountered = False
 
         config = self.sample_params(trial)
-        trial_agent = self.agent.create_agent(config)
+        mean_list = np.Array()
 
-        mean, is_pruned = trial_agent.run(trial)
+        for seed in range(1, 11):
+            config.algorithm.seed = seed
+            trial_agent = self.agent.create_agent(config)
+            print(f'Trial {trial.number} in progress with seed {seed}')
 
-        if mean is None:
-            raise KeyboardInterrupt
+            mean, is_pruned = trial_agent.run(trial)
 
-        # Tell the optimizer that the trial failed
-        if nan_encountered:
-            return float("nan")
+            if mean is None:
+                raise KeyboardInterrupt
 
-        if is_pruned:
-            raise optuna.exceptions.TrialPruned()
+            # Tell the optimizer that the trial failed
+            if nan_encountered:
+                return float("nan")
 
-        return mean
+            if is_pruned:
+                raise optuna.exceptions.TrialPruned()
+
+            mean_list.append(mean)
+
+        return np.mean(mean_list)
 
 
     def tune(self):

@@ -106,7 +106,7 @@ class TD3:
         return actor_loss.mean()
 
 
-    def run(self, trial):
+    def run(self, trial=None):
         try:
             if self.policy_filename:
                 self.agent['eval_agent'].load_model(self.policy_filename)
@@ -296,7 +296,7 @@ def make_gym_env(env_name, xml_file):
 def main(cfg):
     chrono = Chrono()
     a = TD3(cfg)
-    a.run(None)
+    a.run()
     chrono.stop()
 
 if __name__ == "__main__":
