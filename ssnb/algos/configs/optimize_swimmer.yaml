@@ -1,5 +1,5 @@
     agent:
-        classname: ssnb.algos.td3.TD3
+        classname: TD3
         config: ../../../configs/td3/td3_swimmer3.yaml
 
     params:
@@ -15,4 +15,3 @@
 
     study:
         n_trials: 100
-        n_sessions: 5
