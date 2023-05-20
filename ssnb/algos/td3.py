@@ -23,7 +23,7 @@ from ssnb.models.exploration_agents import AddGaussianNoise
 from ssnb.models.loggers import Logger, RewardLogger
 from ssnb.models.shared_models import soft_update_params
 
-assets_path = os.getcwd() + '/../assets/'
+assets_path = os.getcwd() + '/../../assets/'
 
 
 class TD3:
@@ -107,7 +107,7 @@ class TD3:
         return actor_loss.mean()
 
 
-    def run(self):
+    def run(self, trial):
         try:
             if self.policy_filename:
                 self.agent['eval_agent'].load_model(self.policy_filename)
@@ -125,23 +125,23 @@ class TD3:
             actor_optimizer, critic_optimizer = self.setup_optimizers()
             nb_steps = 0
             tmp_steps = 0
+            epoch = 0
+            is_pruned = False
             budget = self.cfg.algorithm.budget
             n_steps = self.cfg.algorithm.n_steps
+            mean = []
             
             # Training loop
-            for epoch in range(self.cfg.algorithm.max_epochs):
+            while budget > nb_steps:
                 # Check the remaining training budget
                 if budget - nb_steps < n_steps :
                     n_steps = budget - nb_steps
-                
-                if budget <= nb_steps:
-                    break
                 
                 # Execute the agent in the workspace
                 if epoch > 0:
                     train_workspace.zero_grad()
                     train_workspace.copy_n_last_steps(1)
-                    self.agent['train_agent'](train_workspace, t=1, n_steps=n_steps)
+                    self.agent['train_agent'](train_workspace, t=1, n_steps=n_steps)  # check if it should be n_steps=cfg.algorithm.n_steps - 1
 
                 else:
                     self.agent['train_agent'](train_workspace, t=0, n_steps=n_steps)
@@ -150,7 +150,7 @@ class TD3:
                 action = transition_workspace["action"]
                 nb_steps += action[0].shape[0]
 
-                if epoch > 0 or self.cfg.algorithm.n_steps > 1:
+                if epoch > 0 or n_steps > 1:
                     rb.put(transition_workspace)
 
                 for _ in range(self.cfg.algorithm.n_updates):
@@ -234,13 +234,20 @@ class TD3:
                     rewards = eval_workspace["env/cumulated_reward"]
                     self.agent['q_agent_1'](eval_workspace, t=0, stop_variable="env/done")
                     q_values = eval_workspace["q_value"].squeeze()
-                    mean = rewards[-1].mean()
-                    logger.add_log("reward", mean, nb_steps)
-                    print(f"nb_steps: {nb_steps}, reward: {mean}")
-                    reward_logger.add(nb_steps, mean)
-
-                    if self.cfg.save_best and mean > self.best_reward:
-                        self.best_reward = mean
+                    mean.append(rewards[-1].mean())
+                    logger.add_log("reward", mean[-1], nb_steps)
+                    print(f"nb_steps: {nb_steps}, reward: {mean[-1]}")
+                    reward_logger.add(nb_steps, mean[-1])
+                    
+                    if self.cfg.optimize:
+                        trial.report(mean[-1], epoch)
+                    
+                        if trial.should_prune():
+                            is_pruned = True
+                            break
+                            
+                    if self.cfg.save_best and mean[-1] > self.best_reward:
+                        self.best_reward = mean[-1]
                         directory = "./td3_agent/"
 
                         if not os.path.exists(directory):
@@ -250,17 +257,28 @@ class TD3:
                             directory
                             + self.cfg.gym_env.env_name
                             + "#td3#T1_T2#"
-                            + str(mean.item())
+                            + str(mean[-1].item())
                             + ".agt"
                         )
 
                         self.agent['eval_agent'].save_model(filename)
-
+                        
+                epoch+= 1
+            
             if not self.policy_filename:
-                self.policy_filename = "./td3_agent/"  + self.cfg.gym_env.env_name + "#td3#T1_T2#" + str(mean.item()) + ".agt"
+                self.policy_filename = (
+                    "./td3_agent/"  
+                    + self.cfg.gym_env.env_name 
+                    + "#td3#T1_T2#" 
+                    + str(np.mean(mean)) 
+                    + ".agt"
+                )
 
             self.agent['train_agent'].save_model(self.policy_filename)
-            return mean
+            return (
+                np.mean(mean), 
+                is_pruned
+            )
             
         except KeyboardInterrupt:
             print('\nAlgorithm interrupted by user before terminating')
@@ -272,14 +290,14 @@ def make_gym_env(env_name, xml_file):
     return gym.make(env_name, xml_file=xml_file)
 
 @hydra.main(
-    config_path="./configs/td3/",
+    config_path="../configs/td3/",
     config_name="td3_swimmer3.yaml",
 )
 
 def main(cfg):
     chrono = Chrono()
     a = TD3(cfg)
-    a.run()
+    a.run(None)
     chrono.stop()
 
 if __name__ == "__main__":
