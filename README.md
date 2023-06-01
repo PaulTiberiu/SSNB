@@ -24,9 +24,26 @@ In order to run a `Swimmer` environment, you only need to execute the algorithms
 If you wish to view your environment, you can set the `render_agents` parameter to `True` in the related config file.
 
 
-### Hyperparameters tuning with Optuna
+## Hyperparameters' tuning with Optuna
 
 `SSNB` also provides a way to get your own hyperparameters with the help of Optuna. In order to execute the optimization script, you need to run `python optimize.py`. Also, you can change the number of bodies, the span of a trial, or the hyperparameters you want to tune in the config file: `optimize_swimmer.yaml`.
+
+
+### Detailed Functioning
+
+Our optimization script is based on a config file named `optimize_swimmer.yml` that provides the relevant keys needed to launch a study, i.e.: the total number of trials, the number of seeds, the hyperparameters that need to be tuned, the algorithm and the number of bodies.
+
+At the beginning of the study, we generate a certain number of seeds that are later printed in the shell. Plus, here are the steps for each trial:
+- Optuna defines a new set of hyperparameters based on the config file and the range of the values
+- We then loop over our seeds and for each we do the following:
+- We execute the algorithm and interrupt it at the end of the amount of steps precised in the config file
+- We report its score to Optuna. In case it is disappointing, the trial is ended. See [Optuna's Median Pruner](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.pruners.MedianPruner.html) for further information.
+- When the loop is over, the average of these scores is computed and defined as the trial's value.
+
+
+### Implementing a new algorithm
+
+In order to add a new algorithm, you have to implement it with OOP and make sure it has a class function `create_agent: cls x cfg -> NewAlgorithmAgent` and a method `run: self -> void` that executes the algorithm for a number of steps given in the config file (in our case: budget).
 
 
 ## Install SSNB
